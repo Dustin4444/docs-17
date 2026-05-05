@@ -28,11 +28,11 @@ Enable gasless transactions by sponsoring transaction fees for your users. Tempo
 
 ### Set up the fee payer service
 
-:::tip
-Tempo provides a public testnet fee payer service at `https://sponsor.moderato.tempo.xyz` that you can use for development and testing. If you want to run your own, follow the instructions below.
-:::
+For production use, applications run their own fee payer service. You can stand up a minimal one using the [`Handler.relay`](/accounts/server/handler.relay) handler provided by the [Tempo Accounts SDK](/accounts). To sponsor transactions, you need a funded account that will act as the fee payer.
 
-You can stand up a minimal fee payer service using the [`Handler.relay`](/accounts/server/handler.relay) handler provided by the [Tempo Accounts SDK](/accounts). To sponsor transactions, you need a funded account that will act as the fee payer.
+:::tip
+For development and testing, Tempo provides a public testnet fee payer service at `https://sponsor.moderato.tempo.xyz`.
+:::
 
 ```ts twoslash [server.ts]
 // @noErrors
