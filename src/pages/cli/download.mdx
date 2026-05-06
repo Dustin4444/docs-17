@@ -22,27 +22,19 @@ tempo download [flags]
 | `-u, --url <url>` | Download a specific snapshot URL |
 | `--list` | List available snapshots |
 | `--resumable` | Resume an interrupted download |
-| `--minimal` | Download minimal snapshot (pruned state, suitable for validators) |
-| `--archive` | Download full archive snapshot (suitable for RPC nodes) |
 
 ## Examples
 
-Download the latest archive snapshot (for RPC nodes):
+Download a snapshot:
 
 ```bash
-tempo download --archive
+tempo download --chain mainnet
 ```
 
-Download the latest minimal snapshot (for validators):
+Download a snapshot for testnet:
 
 ```bash
-tempo download --minimal
-```
-
-Download a snapshot for a specific chain:
-
-```bash
-tempo download --archive --chain moderato
+tempo download --chain moderato
 ```
 
 List available snapshots:
@@ -51,16 +43,10 @@ List available snapshots:
 tempo download --list
 ```
 
-List available snapshots for a specific chain:
-
-```bash
-tempo download --list --chain moderato
-```
-
 Resume an interrupted download:
 
 ```bash
-tempo download --archive --resumable
+tempo download --chain mainnet --resumable
 ```
 
 Then start your node with [`tempo node`](/cli/node).
