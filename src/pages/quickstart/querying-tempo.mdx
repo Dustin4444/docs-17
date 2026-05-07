@@ -4,13 +4,11 @@ description: Write correct analytics queries for Tempo. Covers fee units, TIP-20
 showOutline: 1
 ---
 
-import { IndexSupplyQuery } from '../../components/IndexSupplyQuery'
-
 # Querying Tempo
 
 Tempo is EVM-compatible, so most query patterns you already know work here. There are a handful of differences that will silently produce wrong numbers if you carry over Ethereum assumptions.
 
-The interactive examples run live against [Index Supply](https://www.indexsupply.net) on Tempo mainnet — edit the SQL and hit **Run Query**. Static examples use generic SQL — table and column names will vary by platform.
+Examples use generic SQL — table and column names will vary by platform.
 
 ## 1. Fees are in USD, not ETH
 
@@ -34,16 +32,14 @@ Divide token amounts by `1e6`. Using `1e18` gives a result 10¹² times too smal
 
 `tx.value` is always zero on Tempo. All token movement is in `Transfer` events.
 
-<IndexSupplyQuery
-  chainId={4217}
-  title={'Recent pathUSD transfers'}
-  signatures={["Transfer"]}
-  query={`SELECT block_num, "from", "to", amount
-  FROM transfer
-  WHERE address = '0x20c0000000000000000000000000000000000000'
-  ORDER BY block_num DESC
-  LIMIT 10`}
-/>
+```sql
+SELECT date_trunc('day', block_time) AS day,
+       token_address,
+       SUM(amount) / 1e6 AS volume_usd
+FROM tip20_transfers
+GROUP BY 1, 2
+ORDER BY 1;
+```
 
 `TransferWithMemo` (used by MPP) also emits a standard `Transfer`. Query only `Transfer` to avoid double-counting.
 
@@ -65,25 +61,22 @@ ORDER BY 2 DESC;
 
 ## 6. Compute supply from Transfer events, not Mint events
 
-Genesis mints may not emit `Mint`. Derive supply from `Transfer`: mints have `from = 0x0…0`, burns have `to = 0x0…0`. Divide by `1e6` for whole tokens.
+Genesis mints may not emit `Mint`. Derive supply from `Transfer`: mints have `from = 0x0…0`, burns have `to = 0x0…0`.
 
-<IndexSupplyQuery
-  chainId={4217}
-  title={'pathUSD supply from Transfer events'}
-  signatures={["Transfer"]}
-  query={`SELECT
-    SUM(CASE WHEN "from" = '0x0000000000000000000000000000000000000000'
-             THEN amount ELSE 0 END) AS total_minted,
-    SUM(CASE WHEN "to" = '0x0000000000000000000000000000000000000000'
-             THEN amount ELSE 0 END) AS total_burned,
-    SUM(CASE WHEN "from" = '0x0000000000000000000000000000000000000000'
-             THEN amount
-             WHEN "to" = '0x0000000000000000000000000000000000000000'
-             THEN -amount
-             ELSE 0 END) AS supply
-  FROM transfer
-  WHERE address = '0x20c0000000000000000000000000000000000000'`}
-/>
+```sql
+SELECT
+  SUM(CASE WHEN "from" = '0x0000000000000000000000000000000000000000'
+           THEN amount / 1e6 ELSE 0 END) AS total_minted,
+  SUM(CASE WHEN "to"   = '0x0000000000000000000000000000000000000000'
+           THEN amount / 1e6 ELSE 0 END) AS total_burned,
+  SUM(CASE WHEN "from" = '0x0000000000000000000000000000000000000000'
+           THEN  amount / 1e6
+           WHEN "to"   = '0x0000000000000000000000000000000000000000'
+           THEN -amount / 1e6
+           ELSE 0 END) AS supply
+FROM tip20_transfers
+WHERE token_address = <token>;
+```
 
 ## Key addresses
 
