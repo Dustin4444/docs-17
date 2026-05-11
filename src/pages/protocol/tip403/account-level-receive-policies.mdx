@@ -13,10 +13,10 @@ Account-level receive policies give any account on Tempo a way to specify:
 - which TIP-20 tokens it wants to receive
 - which addresses can send tokens to it
 
-The sender still starts a normal stablecoin transfer or mint. If the receiver accepts that token and sender, the funds are credited normally. If the receiver does not accept them, the funds are held instead of credited to the receiver, and Tempo records a receipt for that specific blocked transfer or mint.
+The sender still starts a normal stablecoin transfer or mint. If the receiver accepts that token and sender, the funds are credited normally. If the receiver does not accept them, the funds are held at a universal holding account instead of credited to the receiver, and Tempo records a receipt in the holding account for that specific blocked transfer or mint. The receiver's policy determines who is eligible to claim the funds corresponding to that specific receipt. 
 
 :::info[Draft feature]
-Account-level receive policies are specified by TIP-1028. They are not active on Tempo unless enabled by a future network upgrade.
+Account-level receive policies are in the design phase and will not be active on Tempo until enabled by a future network upgrade.
 :::
 
 ## Use cases
@@ -44,7 +44,7 @@ The receiver sets the recovery authority in advance as part of its receive polic
 
 If an account has no receive policy, it accepts all TIP-20 transfers and mints at this layer.
 
-The token list and sender list are normal [TIP-403](/protocol/tip403/spec) policies. Only simple allowlists and blocklists are valid here. Built-in policy `0` rejects all, built-in policy `1` allows all, and custom policies start at `2`. A token list is just a TIP-403 policy whose members are token addresses.
+The token list and sender list are normal [TIP-403](/protocol/tip403/spec) policies. Options include reject all, allow all, or a custom policy that blocklists/ allowlists a set of tokens / addresses.
 
 The recovery authority can be:
 
@@ -79,7 +79,9 @@ This means a successful TIP-20 call can have two different outcomes: the receive
 
 For transfers, the sender checked by the receive policy is the `from` address. For `transferFrom`, that is the token owner in `from`, not necessarily the spender who submitted the transaction. For mints, the sender checked by the receive policy is the mint caller.
 
+:::info[Virtual Addresses]
 For [TIP-1022 virtual addresses](/protocol/tip20/virtual-addresses), the policy is checked on the resolved master account. If the send is blocked, the receipt still records the original virtual address for attribution.
+:::
 
 ## Blocked funds
 
@@ -95,7 +97,7 @@ Each blocked transfer or mint gets its own receipt. A receipt is a record of tha
 - whether the operation was a transfer or mint
 - memo, timestamp, and nonce
 
-The receipt details are emitted in `TransferBlocked` or `MintBlocked` events. Claimers and indexers should store those event fields; the holding contract does not enumerate open receipts onchain.
+The receipt details are emitted in `TransferBlocked` or `MintBlocked` events. Claimers and indexers should store those event fields to facilitate later claims. 
 
 ## Claiming blocked funds
 
@@ -115,7 +117,7 @@ There are two outcomes:
 - **Resume:** funds go to the original receiver. This is used when the receiver, or the receiver's selected third party, claims back to the receiver.
 - **Reroute:** funds go somewhere else. Originator-authorized claims are always reroutes, even if the destination is the original receiver.
 
-Claims consume whole receipts. Partial claims are not supported. If a receiver changes its recovery authority, the change only affects future blocked receipts. Existing receipts keep the recovery authority they were created with.
+Claims consume whole receipts, partial claims are not supported. If a receiver changes its recovery authority, the change only affects future blocked receipts. Existing receipts keep the recovery authority they were created with.
 
 ## What operators and integrators should show
 
@@ -135,8 +137,6 @@ In user interfaces, distinguish:
 - **failed:** the normal token checks failed and the transaction reverted
 - **credited:** the receiver accepted the send and received the funds
 - **held:** the transaction succeeded, but the receiver's policy blocked the funds from being credited
-
-For [TIP-1022 virtual-address](/protocol/tip20/virtual-addresses) deposits, preserve the literal virtual address for attribution while showing the resolved master account as the balance holder.
 
 ## Learn more
 
