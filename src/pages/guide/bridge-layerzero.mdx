@@ -287,7 +287,8 @@ cast send 0x20C000000000000000000000b9537d11c60E8b50 \
   'approve(address,uint256)' \
   0xbb95daF376cd63F258d7c37a4eFe57c10055E8E0 \
   $((<AMOUNT> + <NATIVE_FEE>)) \
-  --rpc-url https://rpc.tempo.xyz --private-key $PRIVATE_KEY
+  --rpc-url https://rpc.tempo.xyz \
+  --private-key $PRIVATE_KEY
 ```
 
 One approval covers both the bridge amount and the fee since they share the same token. Use a max approval if you bridge frequently.
@@ -301,10 +302,19 @@ cast send 0xbb95daF376cd63F258d7c37a4eFe57c10055E8E0 \
   0x20C000000000000000000000b9537d11c60E8b50 \
   "(30184,$(cast abi-encode 'f(address)' <DESTINATION_ADDRESS>),<AMOUNT>,<MIN_AMOUNT>,0x,0x,0x)" \
   <NATIVE_FEE> \
-  --rpc-url https://rpc.tempo.xyz --private-key $PRIVATE_KEY
+  --rpc-url https://rpc.tempo.xyz \
+  --private-key $PRIVATE_KEY
 ```
 
-`<NATIVE_FEE>` here is `maxNativeFee` — the call reverts if the fee at execution exceeds this. Track delivery at `https://scan.layerzero-api.com/v1/messages/tx/<TX_HASH>`.
+`<NATIVE_FEE>` here is `maxNativeFee` — the call reverts if the fee at execution exceeds this.
+
+### Verify transaction status
+
+Track delivery to the destination chain via the LayerZero scan API:
+
+```text
+https://scan.layerzero-api.com/v1/messages/tx/<TX_HASH>
+```
 
 :::::
 
