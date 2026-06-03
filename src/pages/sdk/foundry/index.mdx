@@ -286,10 +286,9 @@ cast send <CONTRACT_ADDRESS> 'increment()' \
   --tempo.expiring-nonce --tempo.valid-before $VALID_BEFORE
 
 # Send with access key (delegated signing):
-# First authorize the key via Account Keychain precompile
-cast send 0xAAAAAAAA00000000000000000000000000000000 \
-  'authorizeKey(address,uint8,(uint64,bool,(address,uint256,uint64)[],bool,(address,(bytes4,address[])[])[]))' \
-  $ACCESS_KEY_ADDR 0 '(1893456000,false,[],true,[])' \
+# First authorize the key with the Account Keychain CLI
+EXPIRY=$(($(date +%s) + 86400))
+cast keychain authorize $ACCESS_KEY_ADDR secp256k1 $EXPIRY \
   --rpc-url $TEMPO_RPC_URL \
   --private-key $ROOT_PRIVATE_KEY
 # Then send using the access key
@@ -444,4 +443,3 @@ cast call 0xAAAAAAAA00000000000000000000000000000000 \
   <ACCOUNT> <KEY_ID> <TOKEN_ADDRESS> \
   --rpc-url $TEMPO_RPC_URL
 ```
-
