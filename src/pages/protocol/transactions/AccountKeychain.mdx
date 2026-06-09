@@ -171,6 +171,20 @@ interface IAccountKeychain {
 
 ### Key Authorization
 
+:::info[Coming with T5]
+The [T5 network upgrade](/protocol/upgrades/t5) adds an optional `witness: bytes32` field to `key_authorization` ([TIP-1053](https://github.com/tempoxyz/tempo/blob/main/tips/tip-1053.md)). The protocol includes the witness in the signing hash and emits it when the key authorization is registered, but otherwise treats it as opaque and application-defined. This lets one signature both authorize an access key and bind to an application challenge — collapsing the two-prompt flow that "Sign-In with Tempo" style apps use today into a single signature. No breaking change; tooling should start populating and reading the new field after activation.
+:::
+
+:::info[Coming with T6 — SDK encoders/decoders]
+The [T6 network upgrade](/protocol/upgrades/t6) adds **admin access keys** ([TIP-1049](https://tips.sh/1049)). For partners maintaining transaction tooling, the wire-level change is two new trailing optional fields on the `KeyAuthorization` RLP payload:
+
+```text
+rlp([chain_id, key_type, key_id, expiry?, limits?, allowed_calls?, witness?, is_admin?, account?])
+```
+
+SDK encoders/decoders and hardware-wallet firmware that strictly check field count MUST handle the new optionals before T6. The packed `AuthorizedKey` slot also gains an `is_admin` byte at offset 11. The existing `KeyAuthorized` event is **unchanged**; an additional `AdminKeyAuthorized` event is emitted alongside it when `is_admin == true`, so existing indexers continue to work without changes. Provisioning admin keys uses a new `authorizeAdminKey(keyId, signatureType, witness)` function on this precompile. See the [TIP-1049 section of the T6 page](/protocol/upgrades/t6#admin-access-keys-tip-1049) for the full surface.
+:::
+
 - Creates a new key entry with the specified `signatureType`, `config.expiry`, `config.enforceLimits`, and `isRevoked` set to `false`
 - If `enforceLimits` is `true`, initializes spending limits for each specified token. Each `TokenLimit` carries a `period` (0 = one-time, non-zero = recurring in seconds).
 - If `allowAnyCalls` is `false`, stores the `allowedCalls` allowlist in `keyScopes`. `allowAnyCalls = false` with `allowedCalls = []` means scoped deny-all.
@@ -304,113 +318,3 @@ Access Keys cannot escalate their own privileges because:
 2. Transaction executes, marking the Access Key as inactive or updating its restrictions
 3. Future transactions signed by that Access Key are rejected (after revocation) or evaluated against the updated restrictions
 
-## T2 → T3 migration
-
-:::info[Migration appendix]
-This section captures changes introduced by the [T3 network upgrade](/protocol/upgrades/t3) for integrators migrating from T2. The spec above is the canonical post-T3 specification; this appendix exists for reference and will be removed in a future docs revision.
-:::
-
-### Migration summary
-
-- The legacy `authorizeKey(address,uint8,uint64,bool,(address,uint256)[])` entrypoint (selector `0x54063a55`) is no longer accepted. Calls revert with `LegacyAuthorizeKeySelectorChanged(0x980a6025)`.
-- `authorizeKey(...)` now takes a `KeyRestrictions` tuple that bundles expiry, spending limits, and call scopes. The flattened seven-argument form (which hashes to `0x203e2736` in Foundry) is rejected as an unknown selector — the call must use the canonical tuple-form selector `0x980a6025`.
-- A non-expiring key is no longer represented by `expiry = 0`. Omit `key_authorization.expiry` in the transaction RLP, or pass `u64::MAX` when calling `authorizeKey(...)` directly. Literal `0` reverts with `ExpiryInPast`.
-- `TokenLimit` gains a `period` field, so limits can be one-time (`period = 0`) or recurring.
-- Access keys can be scoped to specific targets, selectors, and recipients via `KeyRestrictions.allowAnyCalls` and `KeyRestrictions.allowedCalls`.
-- The precompile adds `setAllowedCalls(...)`, `removeAllowedCalls(...)`, `getAllowedCalls(...)`, and `getRemainingLimitWithPeriod(...)`.
-- The legacy `getRemainingLimit(...)` selector is dropped. Callers must switch to `getRemainingLimitWithPeriod(...)`, which returns both `remaining` and `periodEnd`.
-- Access-key-signed transactions can no longer create contracts. Use a Root Key for deployment flows.
-- New errors: `InvalidSpendingLimit()`, `ExpiryInPast()`, `SignatureTypeMismatch(uint8,uint8)`, `CallNotAllowed()`, `InvalidCallScope()`, `LegacyAuthorizeKeySelectorChanged(bytes4)`.
-
-### Before and after `authorizeKey(...)`
-
-```text
-T2
-authorizeKey(address,uint8,uint64,bool,(address,uint256)[])
-selector: 0x54063a55
-
-T3
-authorizeKey(address,uint8,(uint64,bool,(address,uint256,uint64)[],bool,(address,(bytes4,address[])[])[]))
-selector: 0x980a6025
-```
-
-### Legacy T2 interface (reference only)
-
-```solidity
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
-
-interface IAccountKeychainT2 {
-    enum SignatureType {
-        Secp256k1,
-        P256,
-        WebAuthn,
-    }
-
-    struct TokenLimit {
-        address token;
-        uint256 amount;
-    }
-
-    struct KeyInfo {
-        SignatureType signatureType;
-        address keyId;
-        uint64 expiry;
-        bool enforceLimits;
-        bool isRevoked;
-    }
-
-    event KeyAuthorized(
-        address indexed account,
-        address indexed publicKey,
-        uint8 signatureType,
-        uint64 expiry
-    );
-    event KeyRevoked(address indexed account, address indexed publicKey);
-    event SpendingLimitUpdated(
-        address indexed account,
-        address indexed publicKey,
-        address indexed token,
-        uint256 newLimit
-    );
-
-    error KeyAlreadyExists();
-    error KeyNotFound();
-    error KeyInactive();
-    error KeyExpired();
-    error KeyAlreadyRevoked();
-    error SpendingLimitExceeded();
-    error InvalidSignatureType();
-    error ZeroPublicKey();
-    error UnauthorizedCaller();
-
-    function authorizeKey(
-        address keyId,
-        SignatureType signatureType,
-        uint64 expiry,
-        bool enforceLimits,
-        TokenLimit[] calldata limits
-    ) external;
-
-    function revokeKey(address keyId) external;
-
-    function updateSpendingLimit(
-        address keyId,
-        address token,
-        uint256 newLimit
-    ) external;
-
-    function getKey(
-        address account,
-        address keyId
-    ) external view returns (KeyInfo memory);
-
-    function getRemainingLimit(
-        address account,
-        address keyId,
-        address token
-    ) external view returns (uint256);
-
-    function getTransactionKey() external view returns (address);
-}
-```

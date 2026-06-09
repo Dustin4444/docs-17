@@ -14,6 +14,10 @@ Build a payment-gated photo gallery API that charges $0.01 per photo using `mppx
 Unlike [one-time payments](/guide/machine-payments/one-time-payments), sessions open a payment channel once and use off-chain vouchers for each subsequent request — vouchers are processed in pure CPU-bound signature checks, not bottlenecked by blockchain throughput.
 :::
 
+:::info[Coming with T5]
+The [T5 network upgrade](/protocol/upgrades/t5) ships an enshrined `TIP20ChannelReserve` precompile at [`0x4D50500000000000000000000000000000000000`](https://explore.tempo.xyz/address/0x4D50500000000000000000000000000000000000) (ASCII `MPP`) that replaces the application-level escrow contract for new MPP integrations ([TIP-1034](https://tips.sh/1034)). The existing escrow contract continues to work; SDKs that target the precompile additionally save gas thanks to [implicit approvals](/protocol/upgrades/t5#tip-1035-implicit-approvals-list) — the channel can pull TIP-20 tokens without a prior `approve` transaction. New `mppx` releases that target the precompile will be linked under [Compatible SDK releases](/protocol/upgrades/t5#compatible-sdk-releases).
+:::
+
 ## How sessions work
 
 <MermaidDiagram chart={`sequenceDiagram
@@ -37,7 +41,7 @@ Unlike [one-time payments](/guide/machine-payments/one-time-payments), sessions 
     Tempo-->>Client: Refund remaining deposit
 `} />
 
-1. **Open** — Client deposits funds into an on-chain escrow contract, creating a payment channel
+1. **Open** — Client deposits funds into an on-chain reserve contract, creating a payment channel
 2. **Session** — Client signs EIP-712 vouchers with increasing cumulative amounts as service is consumed
 3. **Top up** — If the channel runs low, the client deposits additional tokens without closing the channel
 4. **Close** — Either party closes the channel, settling the final balance on-chain and refunding unused deposit
@@ -189,7 +193,7 @@ $ npx mppx http://localhost:3000/api/sessions/photo
 
 ## Client setup
 
-When using sessions from a client, set `maxDeposit` to enable automatic channel management. This is the maximum amount of tokens the client locks into the payment channel's escrow contract. Any unspent deposit is refunded when the channel closes.
+When using sessions from a client, set `maxDeposit` to enable automatic channel management. This is the maximum amount of tokens the client locks into the payment channel's reserve contract. Any unspent deposit is refunded when the channel closes.
 
 ```ts
 import { Mppx, tempo } from 'mppx/client'
