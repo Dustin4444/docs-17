@@ -31,6 +31,7 @@
     "abitype": "^1.2.3",
     "accounts": "^0.10.7",
     "cva": "1.0.0-beta.4",
+    "katex": "^0.17.0",
     "mermaid": "^11.14.0",
     "monaco-editor": "^0.55.1",
     "ox": "0.14.20",

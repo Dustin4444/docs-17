@@ -1,4 +1,5 @@
 @import "tailwindcss" important;
+@import "katex/dist/katex.css";
 
 @source "./";
 
