@@ -1,0 +1,146 @@
+---
+title: Storage Savings to Benefit Your Users
+description: Learn how shared contracts can use storage savings to benefit the users who earned them.
+interactive: true
+---
+
+import { StorageSavingsExplorer } from '../../../components/StorageSavingsExplorer'
+
+# Storage Savings to Benefit Your Users
+
+Storage credits are a network feature for contracts that create storage, clear it, and later create storage again in the same contract. The benefit is strongest for repeat workflows with temporary state, such as DEX orders.
+
+For partners, the important question is not just "can my contract earn a storage credit?" It is "how should I allocate the storage credits to benefit my users fairly?"
+
+:::info[Feature status]
+Storage credits are part of the T7 network upgrade: testnet rollout is planned for July 2, 2026, and mainnet rollout is planned for July 9, 2026. See the [T7 network upgrade](/docs/protocol/upgrades/t7) for the full scope and release details.
+:::
+
+## DEX benchmark example
+
+The DEX benchmark shows why user-level allocation matters. Fresh order placement stays effectively unchanged, while same-maker reuse becomes much cheaper in the measured lifecycle.
+
+| Flow | Before | After | Gas change |
+|---|---:|---:|---:|
+| Fresh place bid | 2,595,385 | 2,604,066 | +8,681 (+0.3%) |
+| Fresh place ask | 2,348,185 | 2,356,766 | +8,581 (+0.4%) |
+| Cancel bid, earn reusable savings | 304,741 | 361,184 | +56,443 (+18.5%) |
+| **Same maker reuses savings after cancel** | **2,075,413** | **868,756** | **1,206,657 gas saved (-58.1%)** |
+| Full fill, earn reusable savings | 384,497 | 436,040 | +51,543 (+13.4%) |
+| **Same maker reuses savings after full fill** | **1,828,213** | **621,456** | **1,206,757 gas saved (-66.0%)** |
+
+Fresh wallet flows are effectively unchanged. The credit-earning steps cost more because the DEX records who earned the reusable savings. The benefit appears when the same maker later places another eligible order: the repeat order is about 1.21M gas cheaper.
+
+## Explore the savings pattern
+
+<StorageSavingsExplorer />
+
+The explorer uses the merged StablecoinDEX benchmark numbers because that is the clearest verified example today. Use it to understand the pattern, then benchmark the specific partner flow before making claims for a bridge, vault, routing contract, or other shared system.
+
+## How storage credits work
+
+The storage credit primitive gives an account a storage credit when it clears one of its own storage slots. Later, that same account can use the credit to reduce the gas cost of creating storage again.
+
+In simple terms:
+
+1. A contract creates storage.
+2. The contract later clears that storage.
+3. The network records a storage credit for that contract.
+4. The contract can use that credit to reduce gas for a future storage creation.
+
+This is useful when storage is temporary rather than permanent. A one-time storage write is different from a repeated create, clear, and recreate pattern.
+
+## Why shared contracts need allocation
+
+Storage credits belong to the account that owns the storage. For shared contracts, that usually means the contract earns the credit, not the end user automatically.
+
+That creates an allocation problem.
+
+For example:
+
+1. Alice places and later cancels an order.
+2. The DEX clears Alice's order storage and earns a storage credit.
+3. Bob places a new order later.
+4. Without user-level accounting, Bob could receive the benefit from storage Alice cleared.
+
+Contracts that serve many users should add their own accounting layer when credits need to stay attached to a specific user, payer, maker, or account.
+
+## Pattern: credit the user who cleared state
+
+The DEX implementation applies this idea to the StablecoinDEX.
+
+Instead of treating all DEX storage credits as one shared pool, the DEX tracks which maker earned reusable order-storage savings. When that same maker later creates eligible order storage, the DEX can apply that maker's savings.
+
+Technically, [TIP-1064](https://tips.sh/1064) applies this allocation pattern to the StablecoinDEX on top of [TIP-1060](https://tips.sh/1060), the contract storage credits primitive.
+
+| Event | Result |
+|---|---|
+| Maker cancels an eligible order | The DEX clears order storage and records reusable savings for that maker |
+| Maker's order is fully filled | The DEX clears order storage and records reusable savings for that maker |
+| Same maker places a later eligible order | The DEX can apply that maker's savings |
+| Different maker places an order | They do not consume savings they did not earn |
+
+Use this pattern for shared contracts:
+
+1. Identify which storage is clearly attributable to one user.
+2. Credit that user when the contract clears that storage.
+3. Spend that user's credits only when the same user creates eligible storage later.
+4. Keep shared accounting storage separate from user-attributed storage.
+
+## Prevent cross-user leakage
+
+User-level allocation prevents one user's savings from being spent by another user.
+
+| Case | Expected behavior |
+|---|---|
+| Same maker returns after earning savings | Apply that maker's stored savings to an eligible order |
+| Different maker places the next order | Do not spend the first maker's savings |
+| Shared internal accounting is cleared | Do not assign the saving to whichever user happened to trigger cleanup |
+
+The DEX benchmark includes cross-user isolation tests to prove this behavior, but the partner-facing rule is simpler: savings earned by Alice should stay available to Alice, and Bob should pay the normal cost unless Bob earned savings too.
+
+## When to use this pattern
+
+Use this pattern when the same user, payer, maker, or account has a repeated lifecycle:
+
+1. The contract creates temporary storage for that user.
+2. The contract later clears that storage.
+3. The same user is likely to create storage again through the same contract.
+4. The contract can track that user's credits without mixing them with unrelated users.
+
+For bridge, vault, routing, and other shared-contract flows, benchmark the specific workflow before making partner-facing claims. Do not reuse DEX numbers for a different contract shape.
+
+## Partner checklist
+
+When deciding whether a contract can benefit from storage credits, check:
+
+1. Does the contract create storage during the user flow?
+2. Does the contract later clear that storage?
+3. Is the cleared storage attributable to one user, payer, order owner, or account?
+4. Does the same user later create eligible storage again?
+5. Can the contract track credits per user instead of sharing all credits globally?
+6. Are there shared internal accounting slots that should not be credited to any one user?
+7. Do gas estimates differ between first-time usage and repeated usage?
+8. Do benchmarks include cross-user cases to make sure credits do not leak?
+9. Are the numbers from a merged benchmark or a partner-specific test, rather than a draft confidence check?
+
+## What not to assume
+
+Storage credits are not a blanket gas discount.
+
+Do not assume:
+
+- Every transaction gets cheaper.
+- First-time users receive the same savings as repeat users.
+- Contract-level credits automatically map to the right end user.
+- Shared accounting storage should be credited to whichever user happened to trigger the cleanup.
+- DEX benchmark numbers apply to bridge, vault, or routing contracts without testing those workflows separately.
+
+## Related pages
+
+- [T7 network upgrade](/docs/protocol/upgrades/t7)
+- [Providing Liquidity](/docs/protocol/exchange/providing-liquidity)
+- [Stablecoin DEX Specification](/docs/protocol/exchange/spec)
+- [Contract storage credits proposal (TIP-1060)](https://tips.sh/1060)
+- [StablecoinDEX order storage credits proposal (TIP-1064)](https://tips.sh/1064)
+- [Merged DEX benchmark](https://github.com/tempoxyz/tempo/pull/5903)
