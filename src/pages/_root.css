@@ -4,6 +4,185 @@
 
 @custom-variant dark (&:where([style*="color-scheme: dark"], [style*="color-scheme: dark"] *));
 
+@font-face {
+  font-family: "Pilat";
+  src: url("/fonts/pilat/Pilat-Book.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/jetbrains-mono/JetBrainsMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/jetbrains-mono/JetBrainsMono-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer utilities {
+  :root {
+    --tempo-docs-outline-width: 280px;
+    --tempo-docs-shell-width: 1280px;
+    --tempo-docs-sidebar-width: 300px;
+    --vocs-spacing-topNav: 65px;
+    --vocs-color-background-primary: #0c0c0c;
+    --vocs-font-family: "Pilat", ui-sans-serif, system-ui, sans-serif;
+    --vocs-font-family-mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+
+  html,
+  body {
+    background: #0a0a0a;
+    font-family: "Pilat", ui-sans-serif, system-ui, sans-serif;
+  }
+
+  [data-v-gutter-top],
+  [data-v-gutter-logo] {
+    display: none;
+  }
+
+  [data-layout][data-v-sidebar] > [data-v-surface-bg] {
+    display: none;
+  }
+
+  [data-layout][data-v-sidebar] > [data-v-gutter-left] {
+    @media (width >= 1080px) {
+      left: max(0px, calc((100vw - var(--tempo-docs-shell-width)) * 0.5));
+      width: var(--tempo-docs-sidebar-width);
+      justify-content: flex-start;
+      background: #0c0c0c;
+      border-right: 1px solid var(--color-line);
+      border-left: 1px solid var(--color-line);
+    }
+  }
+
+  [data-v-sidebar-container],
+  [data-v-sidebar-footer-content],
+  [data-v-mobile-nav] {
+    background: #0c0c0c;
+  }
+
+  [data-v-sidebar-curtain] {
+    background: linear-gradient(to top, transparent, #0c0c0c);
+  }
+
+  [data-v-sidebar-footer-curtain] {
+    background: linear-gradient(to bottom, transparent, #0c0c0c);
+  }
+
+  [data-layout][data-v-sidebar] > [data-v-main] {
+    @media (width >= 1080px) {
+      width: calc(var(--tempo-docs-shell-width) - var(--tempo-docs-sidebar-width));
+      max-width: calc(var(--tempo-docs-shell-width) - var(--tempo-docs-sidebar-width));
+      margin-left: calc(
+        max(0px, calc((100vw - var(--tempo-docs-shell-width)) * 0.5)) +
+        var(--tempo-docs-sidebar-width)
+      );
+      background: #0c0c0c;
+      border-right: 1px solid var(--color-line);
+    }
+
+    @media (width >= 1376px) {
+      padding-right: var(--tempo-docs-outline-width);
+    }
+  }
+
+  [data-v-gutter-right] {
+    @media (width >= 1376px) {
+      right: max(0px, calc((100vw - var(--tempo-docs-shell-width)) * 0.5));
+      width: var(--tempo-docs-outline-width);
+      background: #0c0c0c;
+      border-right: 1px solid var(--color-line);
+    }
+  }
+
+  [data-v-sidebar] [data-v-content],
+  [data-v-sidebar] [data-v-footer] {
+    background: transparent;
+
+    @media (width >= 1376px) {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+}
+
+.nav-active-square > rect {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: nav-active-pixel 460ms steps(3, end) both;
+}
+
+.nav-active-square > rect:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.nav-active-square > rect:nth-child(5) {
+  animation-delay: 45ms;
+}
+
+.nav-active-square > rect:nth-child(9) {
+  animation-delay: 90ms;
+}
+
+.nav-active-square > rect:nth-child(3) {
+  animation-delay: 135ms;
+}
+
+.nav-active-square > rect:nth-child(7) {
+  animation-delay: 180ms;
+}
+
+.nav-active-square > rect:nth-child(2) {
+  animation-delay: 225ms;
+}
+
+.nav-active-square > rect:nth-child(4) {
+  animation-delay: 270ms;
+}
+
+.nav-active-square > rect:nth-child(6) {
+  animation-delay: 315ms;
+}
+
+.nav-active-square > rect:nth-child(8) {
+  animation-delay: 360ms;
+}
+
+@keyframes nav-active-pixel {
+  0% {
+    opacity: 0;
+    scale: 0;
+  }
+
+  55% {
+    opacity: 1;
+    scale: 1.4;
+  }
+
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-active-square > rect {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 @utility scrollbar-gutter-auto {
   scrollbar-gutter: auto;
 }
@@ -23,8 +202,20 @@
 /* https://github.com/radix-ui/colors */
 /* biome-ignore format: <explanation> */
 @theme {
+  --font-sans: "Pilat", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
   --color-black: #000000;
   --color-white: #ffffff;
+
+  --color-background: #0a0a0a;
+  --color-foreground: oklch(94.66% 0 0);
+  --color-info: oklch(71.7% 0.1648 250.79);
+  --color-line: #181818;
+  --color-on-accent: #ffffff;
+  --color-positive: oklch(81.51% 0.2258 148.1);
+  --color-surface-input: #222222;
+  --color-surface-page: #0c0c0c;
 
   --color-gray1: light-dark(#fcfcfc, #111111);
   --color-gray2: light-dark(#f9f9f9, #191919);
