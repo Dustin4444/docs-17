@@ -3,10 +3,10 @@ import { expect, type Locator, type Page, test } from '@playwright/test'
 async function openVirtualAddressesGuide(page: Page): Promise<Locator> {
   let lastError: unknown
 
-  for (let attempt = 0; attempt < 3; attempt++) {
-    await page.goto('/docs/guide/payments/virtual-addresses', { waitUntil: 'domcontentloaded' })
-
+  for (let attempt = 0; attempt < 4; attempt++) {
     try {
+      await page.goto('/docs/guide/payments/virtual-addresses', { waitUntil: 'domcontentloaded' })
+
       await expect(
         page.getByRole('heading', { name: 'Use virtual addresses for deposits' }),
       ).toBeVisible({ timeout: 30000 })
@@ -16,16 +16,11 @@ async function openVirtualAddressesGuide(page: Page): Promise<Locator> {
       return realRegistrationTab
     } catch (error) {
       lastError = error
-      const dynamicImportFailed = await page
-        .getByText('Failed to fetch dynamically imported module')
-        .isVisible()
-        .catch(() => false)
-      const errorBoundaryVisible = await page
-        .getByRole('heading', { name: 'Something went wrong' })
-        .isVisible()
-        .catch(() => false)
 
-      if (!dynamicImportFailed && !errorBoundaryVisible) throw error
+      if (attempt === 3) throw error
+
+      // Vite can briefly serve SSR while client chunks are still re-optimizing in CI.
+      await page.waitForTimeout(1000)
     }
   }
 
