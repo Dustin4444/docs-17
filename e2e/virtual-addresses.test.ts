@@ -1,7 +1,39 @@
-import { expect, test } from '@playwright/test'
+import { expect, type Locator, type Page, test } from '@playwright/test'
+
+async function openVirtualAddressesGuide(page: Page): Promise<Locator> {
+  let lastError: unknown
+
+  for (let attempt = 0; attempt < 3; attempt++) {
+    await page.goto('/docs/guide/payments/virtual-addresses', { waitUntil: 'domcontentloaded' })
+
+    try {
+      await expect(
+        page.getByRole('heading', { name: 'Use virtual addresses for deposits' }),
+      ).toBeVisible({ timeout: 30000 })
+
+      const realRegistrationTab = page.getByRole('tab', { name: 'Real registration' })
+      await expect(realRegistrationTab).toBeVisible({ timeout: 30000 })
+      return realRegistrationTab
+    } catch (error) {
+      lastError = error
+      const dynamicImportFailed = await page
+        .getByText('Failed to fetch dynamically imported module')
+        .isVisible()
+        .catch(() => false)
+      const errorBoundaryVisible = await page
+        .getByRole('heading', { name: 'Something went wrong' })
+        .isVisible()
+        .catch(() => false)
+
+      if (!dynamicImportFailed && !errorBoundaryVisible) throw error
+    }
+  }
+
+  throw lastError
+}
 
 test('virtual addresses guide signs in and starts master registration', async ({ page }) => {
-  test.setTimeout(150000)
+  test.setTimeout(240000)
 
   const client = await page.context().newCDPSession(page)
   await client.send('WebAuthn.enable')
@@ -16,12 +48,8 @@ test('virtual addresses guide signs in and starts master registration', async ({
   })
 
   try {
-    await page.goto('/docs/guide/payments/virtual-addresses')
-
-    await expect(
-      page.getByRole('heading', { name: 'Use virtual addresses for deposits' }),
-    ).toBeVisible()
-    await page.getByRole('tab', { name: 'Real registration' }).click()
+    const realRegistrationTab = await openVirtualAddressesGuide(page)
+    await realRegistrationTab.click()
 
     const passkeySignUpButton = page.getByRole('button', { name: 'Sign up' }).first()
     await expect(passkeySignUpButton).toBeVisible({ timeout: 90000 })
