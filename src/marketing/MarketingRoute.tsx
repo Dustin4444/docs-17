@@ -104,16 +104,16 @@ export default function MarketingRoute({
   }, [])
 
   return (
-    <Suspense fallback={null}>
+    <>
       {children}
       {analyticsReady && (
-        <>
+        <Suspense fallback={null}>
           <SpeedInsights route={route} />
           <Analytics />
           <GoogleAnalytics />
           <PostHogSetup site="developers" />
-        </>
+        </Suspense>
       )}
-    </Suspense>
+    </>
   )
 }
