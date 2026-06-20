@@ -734,7 +734,7 @@ export default function DocsHeader() {
 
   return (
     <header className="docs-site-header fixed top-0 right-0 left-0 z-[60] bg-background">
-      <div className="mx-auto max-w-7xl border-line border-x bg-surface-shell">
+      <div className="w-full border-line border-x bg-surface-shell">
         <nav
           ref={headerRef}
           className="flex items-center justify-between border-line border-b px-5 py-4"
@@ -867,7 +867,7 @@ export default function DocsHeader() {
       </div>
 
       <div className="pointer-events-none absolute top-full right-0 left-0 z-50 hidden lg:block">
-        <div className="mx-auto max-w-7xl">
+        <div className="w-full">
           <div
             className={`transition duration-200 ease-out will-change-[opacity,transform,filter] motion-reduce:transition-none ${
               activeMenu
@@ -920,7 +920,7 @@ export default function DocsHeader() {
             : 'pointer-events-none -translate-y-2 opacity-0'
         }`}
       >
-        <div className="mx-auto flex max-w-7xl flex-col border-line border-x border-b bg-background px-5 pb-5">
+        <div className="flex w-full flex-col border-line border-x border-b bg-background px-5 pb-5">
           {menu.map((item) => {
             const active = isActiveMenuItem(pathname, item)
             return item.mega ? (

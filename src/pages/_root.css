@@ -61,7 +61,7 @@
 @layer utilities {
   :root {
     --tempo-docs-outline-width: 280px;
-    --tempo-docs-shell-width: 1280px;
+    --tempo-docs-shell-width: 100%;
     --tempo-docs-sidebar-width: 280px;
     --vocs-spacing-topNav: 65px;
   }
