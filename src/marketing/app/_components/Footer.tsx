@@ -15,7 +15,7 @@ type FooterLink = {
 type FooterColumn = { header: string; links: FooterLink[] }
 
 const footerLinkClassName =
-  'font-sans text-[14px] tracking-[0] text-white/50 transition-colors hover:text-white'
+  'font-sans text-[14px] tracking-[0] text-foreground/50 transition-colors hover:text-foreground'
 
 const CONTACT_URL = 'https://tempo.xyz/contact'
 const GITHUB_URL = 'https://github.com/tempoxyz'
@@ -105,18 +105,18 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-2">
               <TempoLogo className="h-[18px] w-[80px] text-foreground" />
             </Link>
-            <p className="font-sans text-[15px] text-white/45 leading-[1.6] tracking-[0]">
+            <p className="font-sans text-[15px] text-foreground/45 leading-[1.6] tracking-[0]">
               Stablecoin payments infrastructure for developers, apps, and agents building on Tempo.
             </p>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-sans text-[14px] text-white/50 tracking-[0]">
-              <Link href="/" className="transition-colors hover:text-white">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-sans text-[14px] text-foreground/50 tracking-[0]">
+              <Link href="/" className="transition-colors hover:text-foreground">
                 © {new Date().getFullYear()} Tempo
               </Link>
               <a
                 href="https://tempo.xyz"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition-colors hover:text-white"
+                className="transition-colors hover:text-foreground"
               >
                 tempo.xyz
               </a>
@@ -131,7 +131,7 @@ export default function Footer() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={label}
-                      className="flex size-9 items-center justify-center text-white/45 transition-colors hover:text-white"
+                      className="flex size-9 items-center justify-center text-foreground/45 transition-colors hover:text-foreground"
                     >
                       <Icon className="size-[19px]" />
                     </a>
@@ -145,7 +145,7 @@ export default function Footer() {
           <nav aria-label="Footer" className="grid grid-cols-2 gap-x-8 gap-y-10 md:grid-cols-3">
             {columns.map((col) => (
               <div key={col.header} className="flex flex-col gap-4">
-                <p className="font-sans text-[14px] text-white tracking-[0]">{col.header}</p>
+                <p className="font-sans text-[14px] text-foreground tracking-[0]">{col.header}</p>
                 <ul className="flex flex-col gap-3">
                   {col.links.map((link) => (
                     <li key={link.label}>

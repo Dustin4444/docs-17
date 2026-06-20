@@ -92,7 +92,7 @@ export default function Hero() {
                       backgroundSize: '5px 5px',
                     }}
                   />
-                  <ArrowUpRight className="size-5 shrink-0 text-white/30 transition-colors group-hover:text-foreground" />
+                  <ArrowUpRight className="size-5 shrink-0 text-foreground/30 transition-colors group-hover:text-foreground" />
                 </span>
                 <span className="mt-7 block">
                   <span className="block text-wrap font-sans text-[18px] text-foreground leading-[1.15] tracking-[0] sm:text-[20px] lg:text-[21px] xl:text-[22px]">

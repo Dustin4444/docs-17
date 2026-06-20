@@ -150,7 +150,7 @@ function renderCode(code: string[], highlight?: string[]) {
           return group.boxed ? (
             <span
               key={groupKey}
-              className="-mx-1 -my-0.5 rounded-[4px] bg-white/[0.07] px-1 py-0.5 ring-1 ring-white/10"
+              className="-mx-1 -my-0.5 rounded-[4px] bg-foreground/[0.07] px-1 py-0.5 ring-1 ring-foreground/10"
             >
               {inner}
             </span>
@@ -217,7 +217,7 @@ function CopyButton({ text }: { text: string }) {
       type="button"
       onClick={handleCopy}
       aria-label="Copy code"
-      className="absolute top-3 right-3 z-20 flex items-center gap-1.5 rounded-[6px] border border-line bg-white/[0.04] px-2.5 py-1.5 font-mono text-[12px] text-white/55 opacity-0 backdrop-blur-sm transition-all duration-200 hover:bg-white/[0.08] hover:text-white group-hover:opacity-100"
+      className="absolute top-3 right-3 z-20 flex items-center gap-1.5 rounded-[6px] border border-line bg-foreground/[0.04] px-2.5 py-1.5 font-mono text-[12px] text-foreground/55 opacity-0 backdrop-blur-sm transition-all duration-200 hover:bg-foreground/[0.08] hover:text-foreground group-hover:opacity-100"
     >
       {copied ? <CheckIcon /> : <CopyIcon />}
       {copied ? 'Copied' : 'Copy'}
@@ -252,7 +252,7 @@ export default function CodePanel({
           bare ? '' : 'border border-line'
         }`}
       >
-        <pre className="w-fit font-mono text-[12px] text-white/80 leading-[1.7]">
+        <pre className="w-fit font-mono text-[12px] text-foreground/80 leading-[1.7]">
           <code>{renderCode(code, highlight)}</code>
         </pre>
       </div>
@@ -273,7 +273,7 @@ export default function CodePanel({
               {sizer}
             </pre>
           )}
-          <pre className="font-mono text-[13px] text-white/80 leading-[1.7] [grid-area:1/1]">
+          <pre className="font-mono text-[13px] text-foreground/80 leading-[1.7] [grid-area:1/1]">
             <code>{renderCode(code, highlight)}</code>
           </pre>
         </div>

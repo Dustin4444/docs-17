@@ -140,7 +140,7 @@ function ActiveSquare({ activeKey }: { activeKey: string }) {
       key={activeKey}
       viewBox="0 0 11 11"
       aria-hidden
-      className="nav-active-square size-[11px] shrink-0 text-white/70"
+      className="nav-active-square size-[11px] shrink-0 text-foreground/70"
     >
       {[0, 4, 8].flatMap((y) =>
         [0, 4, 8].map((x) => (
@@ -212,7 +212,7 @@ function Chevron({ open }: { open: boolean }) {
       viewBox="0 0 16 16"
       fill="none"
       aria-hidden
-      className={`shrink-0 text-white/50 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+      className={`shrink-0 text-foreground/50 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
     >
       <path
         d="M4 6l4 4 4-4"
@@ -289,17 +289,17 @@ function AgentMenuItem({
       target={external ? '_blank' : undefined}
       rel={external ? 'noopener noreferrer' : undefined}
       onClick={onClick}
-      className="group/item relative flex items-start gap-3 rounded-[4px] px-3 py-2.5 transition-colors hover:bg-white/[0.04]"
+      className="group/item relative flex items-start gap-3 rounded-[4px] px-3 py-2.5 transition-colors hover:bg-foreground/[0.04]"
     >
       {external ? (
-        <ArrowUpRight className="absolute top-2.5 right-3 size-3 text-white/35 transition-colors group-hover/item:text-white/60" />
+        <ArrowUpRight className="absolute top-2.5 right-3 size-3 text-foreground/35 transition-colors group-hover/item:text-foreground/60" />
       ) : null}
       <span className="grid size-[34px] shrink-0 place-items-center bg-surface-input text-foreground">
         {icon}
       </span>
       <span className="flex min-w-0 flex-col gap-0.5">
         <span className="font-sans text-[14px] text-foreground tracking-[0]">{label}</span>
-        <span className="font-sans text-[13px] text-white/45 leading-[1.4] tracking-[0]">
+        <span className="font-sans text-[13px] text-foreground/45 leading-[1.4] tracking-[0]">
           {desc}
         </span>
       </span>
@@ -332,7 +332,7 @@ function AgentsPanel({
   return (
     <div className={desktop ? 'w-[520px] p-3' : 'pb-4'}>
       {desktop ? (
-        <p className="px-3 pt-2 pb-1.5 font-sans text-[13px] text-white/35 tracking-[0]">
+        <p className="px-3 pt-2 pb-1.5 font-sans text-[13px] text-foreground/35 tracking-[0]">
           Use Tempo with AI
         </p>
       ) : null}
@@ -347,7 +347,7 @@ function AgentsPanel({
               <span className="font-sans text-[14px] text-foreground tracking-[0]">
                 Tempo MCP server
               </span>
-              <span className="font-sans text-[13px] text-white/45 leading-[1.4] tracking-[0]">
+              <span className="font-sans text-[13px] text-foreground/45 leading-[1.4] tracking-[0]">
                 Give agents search and read tools for Tempo docs
               </span>
             </span>
@@ -368,8 +368,8 @@ function AgentsPanel({
                     }}
                     className={`rounded-[4px] px-2.5 py-1.5 font-sans text-[12px] tracking-[0] transition-colors ${
                       active
-                        ? 'bg-white/[0.06] text-foreground'
-                        : 'text-white/40 hover:bg-white/[0.03] hover:text-white/70'
+                        ? 'bg-foreground/[0.06] text-foreground'
+                        : 'text-foreground/40 hover:bg-foreground/[0.03] hover:text-foreground/70'
                     }`}
                   >
                     {item.label}
@@ -382,15 +382,17 @@ function AgentsPanel({
               type="button"
               onClick={copyCommand}
               aria-label="Copy Tempo MCP install command"
-              className="group/copy flex min-h-[48px] w-full items-start gap-3 rounded-[4px] bg-white/[0.035] px-3 py-2.5 text-left transition-colors hover:bg-white/[0.06]"
+              className="group/copy flex min-h-[48px] w-full items-start gap-3 rounded-[4px] bg-foreground/[0.035] px-3 py-2.5 text-left transition-colors hover:bg-foreground/[0.06]"
             >
               <code className="min-w-0 flex-1 whitespace-normal break-words font-mono text-[12px] text-foreground leading-[1.55]">
                 {activeCommand.prefix}
-                <span className="text-white/65">{TEMPO_MCP_URL}</span>
+                <span className="text-foreground/65">{TEMPO_MCP_URL}</span>
               </code>
               <span
                 className={`mt-1 shrink-0 transition-colors ${
-                  copied ? 'text-foreground' : 'text-white/35 group-hover/copy:text-white/70'
+                  copied
+                    ? 'text-foreground'
+                    : 'text-foreground/35 group-hover/copy:text-foreground/70'
                 }`}
               >
                 {copied ? <CheckIcon /> : <CopyIcon />}
@@ -535,7 +537,7 @@ export default function Header() {
                     viewBox="0 0 16 16"
                     fill="none"
                     aria-hidden
-                    className={`shrink-0 text-white/40 transition-transform duration-200 ease-out ${
+                    className={`shrink-0 text-foreground/40 transition-transform duration-200 ease-out ${
                       activeMenu === item.label ? 'rotate-180' : ''
                     }`}
                   >
@@ -600,7 +602,7 @@ export default function Header() {
             onMouseLeave={scheduleClose}
             onFocus={() => openMenu('For agents')}
             onBlur={scheduleClose}
-            className="flex h-9 items-center gap-2 rounded-[4px] border border-line px-4 font-sans text-[14px] text-foreground tracking-[0] transition-colors hover:bg-white/[0.04]"
+            className="flex h-9 items-center gap-2 rounded-[4px] border border-line px-4 font-sans text-[14px] text-foreground tracking-[0] transition-colors hover:bg-foreground/[0.04]"
           >
             <GearIcon />
             For agents
@@ -610,7 +612,7 @@ export default function Header() {
               viewBox="0 0 16 16"
               fill="none"
               aria-hidden
-              className={`shrink-0 text-white/40 transition-transform duration-200 ease-out ${
+              className={`shrink-0 text-foreground/40 transition-transform duration-200 ease-out ${
                 activeMenu === 'For agents' ? 'rotate-180' : ''
               }`}
             >
@@ -732,7 +734,7 @@ export default function Header() {
                             key={sub.label}
                             href={sub.href}
                             onClick={close}
-                            className="font-sans text-[15px] text-white/50 tracking-[0] transition-colors hover:text-white"
+                            className="font-sans text-[15px] text-foreground/50 tracking-[0] transition-colors hover:text-foreground"
                           >
                             {sub.label}
                           </Link>
@@ -743,7 +745,7 @@ export default function Header() {
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={close}
-                            className="flex items-start gap-1.5 font-sans text-[15px] text-white/50 tracking-[0] transition-colors hover:text-white"
+                            className="flex items-start gap-1.5 font-sans text-[15px] text-foreground/50 tracking-[0] transition-colors hover:text-foreground"
                           >
                             {sub.label}
                             <ArrowUpRight className="mt-0.5 size-3" />

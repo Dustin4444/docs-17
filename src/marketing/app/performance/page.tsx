@@ -73,7 +73,7 @@ function Section({
     <section id={id} className="scroll-mt-12 border-line border-b px-5 py-16 lg:px-8">
       <Reveal>
         <h2 className="font-sans text-[24px] text-foreground tracking-[0]">{title}</h2>
-        <p className="mt-3 max-w-[640px] font-sans text-[16px] text-white/50 leading-[1.5]">
+        <p className="mt-3 max-w-[640px] font-sans text-[16px] text-foreground/50 leading-[1.5]">
           {note}
         </p>
         <div className="mt-10">{children}</div>
@@ -138,13 +138,13 @@ export default function PerformancePage() {
                 <p className="font-sans text-[20px] text-foreground leading-tight tracking-[0]">
                   Transactions per second
                 </p>
-                <p className="mt-1 font-sans text-[14px] text-white/45 leading-[1.4]">
+                <p className="mt-1 font-sans text-[14px] text-foreground/45 leading-[1.4]">
                   {chartRange}
                 </p>
               </div>
             </Reveal>
           ) : (
-            <p className="mt-16 font-mono text-[12px] text-white/40">
+            <p className="mt-16 font-mono text-[12px] text-foreground/40">
               Benchmark feed unavailable. Charts will return when the API is reachable.
             </p>
           )}
@@ -220,13 +220,13 @@ export default function PerformancePage() {
                 <span className="block font-sans text-[24px] text-foreground tracking-[0]">
                   Tempo is continuously evolving.
                 </span>
-                <span className="mt-3 block max-w-[760px] font-sans text-[16px] text-white/50 leading-[1.5] transition-colors group-hover:text-white/65 group-focus-visible:text-white/65">
+                <span className="mt-3 block max-w-[760px] font-sans text-[16px] text-foreground/50 leading-[1.5] transition-colors group-hover:text-foreground/65 group-focus-visible:text-foreground/65">
                   Tempo keeps pushing the limits of execution and transaction throughput. The public
                   performance dashboard has the details and updates nightly as the node software
                   underlying Tempo improves.
                 </span>
               </span>
-              <span className="flex items-center gap-2 font-sans text-[14px] text-white/55 tracking-[0] transition-colors group-hover:text-foreground group-focus-visible:text-foreground">
+              <span className="flex items-center gap-2 font-sans text-[14px] text-foreground/55 tracking-[0] transition-colors group-hover:text-foreground group-focus-visible:text-foreground">
                 Open performance dashboard
                 <ArrowUpRight className="size-[14px] shrink-0" />
               </span>

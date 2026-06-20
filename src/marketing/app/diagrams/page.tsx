@@ -20,7 +20,7 @@ export default function DiagramsPage() {
           <h1 className="font-sans text-[clamp(1.75rem,4vw,2.5rem)] text-foreground leading-[1.15] tracking-[-0.02em] antialiased">
             Diagram playground
           </h1>
-          <p className="mt-4 max-w-[620px] font-sans text-[15px] text-white/50 leading-[1.55]">
+          <p className="mt-4 max-w-[620px] font-sans text-[15px] text-foreground/50 leading-[1.55]">
             Home of Tempo&apos;s diagram language. Author and preview specs here, then ship them —
             the components live in <code className="font-mono text-[13px]">app/diagrams/</code>.
           </p>
@@ -29,7 +29,7 @@ export default function DiagramsPage() {
         <section className="flex flex-col gap-6 pb-10">
           <div className="px-5 lg:px-8">
             <h2 className="font-sans text-[18px] text-foreground">Feature diagrams</h2>
-            <p className="mt-2 max-w-[620px] font-sans text-[14px] text-white/50 leading-[1.5]">
+            <p className="mt-2 max-w-[620px] font-sans text-[14px] text-foreground/50 leading-[1.5]">
               One diagram per Tempo feature, grouped by product area. Each tile is a starting{' '}
               <code className="font-mono text-[12px]">spec</code> in{' '}
               <code className="font-mono text-[12px]">featureCatalog.ts</code> that we refine into a
@@ -42,7 +42,7 @@ export default function DiagramsPage() {
         <section className="flex flex-col gap-6 border-line border-t pt-12">
           <div className="px-5 lg:px-8">
             <h2 className="font-sans text-[18px] text-foreground">Static SVGs</h2>
-            <p className="mt-2 max-w-[620px] font-sans text-[14px] text-white/50 leading-[1.5]">
+            <p className="mt-2 max-w-[620px] font-sans text-[14px] text-foreground/50 leading-[1.5]">
               Tweak tokens, drop in data, and copy or download a ready-to-ship SVG.
             </p>
           </div>

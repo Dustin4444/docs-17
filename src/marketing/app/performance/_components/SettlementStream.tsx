@@ -95,11 +95,11 @@ export default function SettlementStream({ runs }: { runs: PerfRun[] }) {
         <div>
           {/* "Now" cursor: the live marker sits over the block being built. */}
           <p
-            className="absolute right-0 flex items-center gap-1.5 font-mono text-[9px] text-white/40 tracking-wider"
+            className="absolute right-0 flex items-center gap-1.5 font-mono text-[9px] text-foreground/40 tracking-wider"
             style={{ top: TRACK_TOP - 22 }}
           >
             <span
-              className={`block size-1.5 shrink-0 rounded-full ${isLive ? 'bg-indicator-green' : 'bg-white/25'}`}
+              className={`block size-1.5 shrink-0 rounded-full ${isLive ? 'bg-indicator-green' : 'bg-foreground/25'}`}
             />
             FINALIZED
           </p>
@@ -134,11 +134,11 @@ export default function SettlementStream({ runs }: { runs: PerfRun[] }) {
                     <span className="font-mono text-[12px] text-indicator-green leading-none">
                       ✓
                     </span>
-                    <span className="font-mono text-[11px] text-white/50 tracking-wider">
+                    <span className="font-mono text-[11px] text-foreground/50 tracking-wider">
                       {b.intervalMs === null ? 'FINAL' : `${b.intervalMs} MS`}
                     </span>
                   </div>
-                  <p className="mt-1.5 text-center font-mono text-[9px] text-white/25 tracking-wide transition-colors group-hover:text-white/45 group-focus-visible:text-white/45">
+                  <p className="mt-1.5 text-center font-mono text-[9px] text-foreground/25 tracking-wide transition-colors group-hover:text-foreground/45 group-focus-visible:text-foreground/45">
                     #{b.height.toLocaleString('en-US')}
                   </p>
                 </a>
@@ -147,7 +147,7 @@ export default function SettlementStream({ runs }: { runs: PerfRun[] }) {
 
             {shown.length === 0 ? (
               <p
-                className="absolute right-0 font-mono text-[10px] text-white/35 tracking-wider"
+                className="absolute right-0 font-mono text-[10px] text-foreground/35 tracking-wider"
                 style={{ top: CELL / 2 - 5 }}
               >
                 Waiting for finalized blocks…
@@ -163,12 +163,12 @@ export default function SettlementStream({ runs }: { runs: PerfRun[] }) {
             className="absolute flex items-center"
             style={{ right: CELL / 2, width: STEP, top: TRACK_TOP + TRACK_H + 6 }}
           >
-            <span className="h-2 w-px bg-white/25" />
-            <span className="h-px flex-1 bg-white/25" />
-            <span className="h-2 w-px bg-white/25" />
+            <span className="h-2 w-px bg-foreground/25" />
+            <span className="h-px flex-1 bg-foreground/25" />
+            <span className="h-2 w-px bg-foreground/25" />
           </div>
           <p
-            className="absolute text-center font-mono text-[10px] text-white/35"
+            className="absolute text-center font-mono text-[10px] text-foreground/35"
             style={{ right: CELL / 2, width: STEP, top: TRACK_TOP + TRACK_H + 16 }}
           >
             AVG {observedIntervals.length > 0 ? avgIntervalMs : `~${avgIntervalMs}`} MS

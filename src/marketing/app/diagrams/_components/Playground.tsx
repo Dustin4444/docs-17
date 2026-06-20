@@ -15,7 +15,7 @@ const DEFAULT_CHART = {
   labels: 'v1.5, v1.6, v1.7, v1.8',
 }
 
-const fieldLabel = 'font-mono text-[11px] tracking-[0.02em] text-white/40 uppercase'
+const fieldLabel = 'font-mono text-[11px] tracking-[0.02em] text-foreground/40 uppercase'
 const textInput =
   'h-9 w-full border border-line bg-surface-input px-3 font-mono text-[12px] text-foreground outline-none focus:border-line-strong'
 
@@ -69,7 +69,7 @@ function SliderField({
     <label className="flex flex-col gap-1.5">
       <span className="flex items-baseline justify-between">
         <span className={fieldLabel}>{label}</span>
-        <span className="font-mono text-[11px] text-white/60">{value}</span>
+        <span className="font-mono text-[11px] text-foreground/60">{value}</span>
       </span>
       <input
         type="range"
@@ -89,7 +89,7 @@ function ActionButton({ label, onClick }: { label: string; onClick: () => void }
     <button
       type="button"
       onClick={onClick}
-      className="h-8 border border-line px-3 font-mono text-[11px] text-white/60 uppercase tracking-[0.02em] transition-colors hover:bg-surface-block hover:text-white"
+      className="h-8 border border-line px-3 font-mono text-[11px] text-foreground/60 uppercase tracking-[0.02em] transition-colors hover:bg-surface-block hover:text-foreground"
     >
       {label}
     </button>
@@ -311,7 +311,7 @@ export default function Playground() {
               className={textInput}
             />
           </label>
-          <p className="font-sans text-[12px] text-white/40 leading-[1.5]">
+          <p className="font-sans text-[12px] text-foreground/40 leading-[1.5]">
             The last bar takes the accent — the diagram&apos;s one highlighted idea.
           </p>
         </section>
@@ -350,10 +350,10 @@ export default function Playground() {
               <div dangerouslySetInnerHTML={{ __html: preview.svg }} />
             </div>
             <details>
-              <summary className="cursor-pointer font-mono text-[11px] text-white/40 uppercase tracking-[0.02em] transition-colors hover:text-white">
+              <summary className="cursor-pointer font-mono text-[11px] text-foreground/40 uppercase tracking-[0.02em] transition-colors hover:text-foreground">
                 View SVG source
               </summary>
-              <pre className="code-scroll mt-2 max-h-[320px] overflow-auto border border-line bg-surface-block p-4 font-mono text-[11px] text-white/60 leading-[1.6]">
+              <pre className="code-scroll mt-2 max-h-[320px] overflow-auto border border-line bg-surface-block p-4 font-mono text-[11px] text-foreground/60 leading-[1.6]">
                 {preview.svg}
               </pre>
             </details>
@@ -362,10 +362,10 @@ export default function Playground() {
 
         <section className="flex flex-col gap-3">
           <h2 className="font-sans text-[14px] text-foreground">Style tokens</h2>
-          <p className="font-sans text-[13px] text-white/50 leading-[1.5]">
+          <p className="font-sans text-[13px] text-foreground/50 leading-[1.5]">
             Tweak until it looks right, then copy this block alongside the exported SVG.
           </p>
-          <pre className="code-scroll overflow-auto border border-line bg-surface-block p-4 font-mono text-[11px] text-white/60 leading-[1.6]">
+          <pre className="code-scroll overflow-auto border border-line bg-surface-block p-4 font-mono text-[11px] text-foreground/60 leading-[1.6]">
             {tokensJson}
           </pre>
         </section>

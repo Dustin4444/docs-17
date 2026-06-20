@@ -84,7 +84,7 @@ export default function OpenSourceSection() {
         <h2 className="font-sans text-[clamp(2rem,6vw,3rem)] text-foreground leading-[1.1] tracking-[-0.02em] antialiased">
           Open source
         </h2>
-        <p className="mt-6 max-w-[560px] font-sans text-[16px] text-white/50 leading-[1.4] tracking-[0] lg:text-[20px]">
+        <p className="mt-6 max-w-[560px] font-sans text-[16px] text-foreground/50 leading-[1.4] tracking-[0] lg:text-[20px]">
           All of Tempo&apos;s code is open source, built by the same team behind Reth, Foundry,
           viem, and more.
         </p>
@@ -115,14 +115,14 @@ export default function OpenSourceSection() {
                           className={`size-3 shrink-0 ${neutralMarker ? 'repo-brand-square-neutral' : ''}`}
                           style={neutralMarker ? undefined : { backgroundColor: brandColor }}
                         />
-                        <span className="font-sans text-[18px] text-white tracking-[0]">
+                        <span className="font-sans text-[18px] text-foreground tracking-[0]">
                           {name}
                         </span>
                       </span>
-                      <ArrowUpRight className="size-4 shrink-0 text-white/35 transition-colors group-hover:text-white/80" />
+                      <ArrowUpRight className="size-4 shrink-0 text-foreground/35 transition-colors group-hover:text-foreground/80" />
                     </span>
 
-                    <span className="mt-8 font-sans text-[15px] text-white/65 leading-[1.45] tracking-[0] transition-colors group-hover:text-white/85">
+                    <span className="mt-8 font-sans text-[15px] text-foreground/65 leading-[1.45] tracking-[0] transition-colors group-hover:text-foreground/85">
                       {desc}
                     </span>
                   </a>
@@ -139,7 +139,7 @@ export default function OpenSourceSection() {
             className="group flex items-center justify-center gap-2 border-line border-b px-5 py-5 font-sans text-[16px] text-foreground tracking-[0] transition-colors hover:bg-surface-block lg:px-8"
           >
             View on GitHub
-            <ArrowUpRight className="size-4 shrink-0 text-white/45 transition-colors group-hover:text-white/80" />
+            <ArrowUpRight className="size-4 shrink-0 text-foreground/45 transition-colors group-hover:text-foreground/80" />
           </a>
         </Reveal>
       </div>

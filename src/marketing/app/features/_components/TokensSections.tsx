@@ -569,8 +569,8 @@ function StoryPointsList({
               <p
                 className={`mt-2 font-sans text-[14px] leading-[1.45] tracking-[0] ${
                   selectable && activeIndex === i
-                    ? 'text-white/55'
-                    : 'text-white/45 group-hover:text-white/55'
+                    ? 'text-foreground/55'
+                    : 'text-foreground/45 group-hover:text-foreground/55'
                 }`}
               >
                 {point.desc}
@@ -629,7 +629,7 @@ function StorySection({ story, index }: { story: Story; index: number }) {
               <h2 className="max-w-[620px] text-balance font-sans text-[clamp(1.5rem,5vw,2.5rem)] text-foreground leading-[1.08] tracking-[-0.03em] antialiased">
                 {story.title}
               </h2>
-              <p className="mt-6 max-w-[620px] text-balance font-sans text-[16px] text-white/50 leading-[1.5] tracking-[0]">
+              <p className="mt-6 max-w-[620px] text-balance font-sans text-[16px] text-foreground/50 leading-[1.5] tracking-[0]">
                 {story.copy}
               </p>
               <div className="mt-9 flex flex-wrap items-center gap-2.5">

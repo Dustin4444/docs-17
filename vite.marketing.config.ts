@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import Icons from 'unplugin-icons/vite'
 import { defineConfig, type Plugin } from 'vite'
@@ -159,7 +160,12 @@ function injectHeadTags(html: string, tags: string[]) {
 
 export default defineConfig({
   root: 'src/marketing',
-  plugins: [Icons({ compiler: 'jsx', jsx: 'react' }), react(), marketingRouteCopies()],
+  plugins: [
+    tailwindcss(),
+    Icons({ compiler: 'jsx', jsx: 'react' }),
+    react(),
+    marketingRouteCopies(),
+  ],
   resolve: {
     alias: [
       {

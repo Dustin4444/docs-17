@@ -14,7 +14,7 @@ export type Feature = {
   // Stable feature key used by feature-page routing and section selection.
   slug: string
   title: string
-  // Muted by default; wrap keywords in <span className="text-white"> to highlight.
+  // Muted by default; wrap keywords in <span className="text-foreground"> to highlight.
   description: ReactNode
   items: FeatureItemData[]
   // Extra capabilities shown only on the dedicated feature page, where
@@ -40,9 +40,10 @@ export const features: Feature[] = [
     title: 'Tempo Transactions',
     description: (
       <>
-        Tempo Transactions let apps <span className="text-white">batch</span>,{' '}
-        <span className="text-white">sponsor</span>, <span className="text-white">schedule</span>,
-        and <span className="text-white">parallelize</span> payments through a native transaction
+        Tempo Transactions let apps <span className="text-foreground">batch</span>,{' '}
+        <span className="text-foreground">sponsor</span>,{' '}
+        <span className="text-foreground">schedule</span>, and{' '}
+        <span className="text-foreground">parallelize</span> payments through a native transaction
         type.
       </>
     ),
@@ -181,10 +182,12 @@ export const features: Feature[] = [
     description: (
       <>
         TIP-20 gives stablecoins the primitives needed for payments:{' '}
-        <span className="text-white">fees</span>, <span className="text-white">memos</span>,{' '}
-        <span className="text-white">lanes</span>, <span className="text-white">policies</span>,{' '}
-        <span className="text-white">rewards</span>, and{' '}
-        <span className="text-white">issuer controls</span>.
+        <span className="text-foreground">fees</span>,{' '}
+        <span className="text-foreground">memos</span>,{' '}
+        <span className="text-foreground">lanes</span>,{' '}
+        <span className="text-foreground">policies</span>,{' '}
+        <span className="text-foreground">rewards</span>, and{' '}
+        <span className="text-foreground">issuer controls</span>.
       </>
     ),
     items: [

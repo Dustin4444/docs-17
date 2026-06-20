@@ -66,7 +66,7 @@ function LaneSpark({ runs }: { runs: PerfRun[] }) {
     <div className="relative h-40 overflow-hidden" aria-hidden>
       <div className="absolute inset-x-0 top-0 h-[58%]">
         <div className="absolute inset-0 bg-background" />
-        <p className="absolute top-2 left-3 font-mono text-[9px] text-white/45 tracking-wider">
+        <p className="absolute top-2 left-3 font-mono text-[9px] text-foreground/45 tracking-wider">
           GENERAL BLOCKSPACE
         </p>
         <svg
@@ -162,23 +162,23 @@ function StatCard({
             {label}
           </p>
           {!numberOnly ? (
-            <p className="mt-2 font-sans text-[24px] text-white/55 tracking-[-0.01em] lg:text-[28px]">
+            <p className="mt-2 font-sans text-[24px] text-foreground/55 tracking-[-0.01em] lg:text-[28px]">
               {value}
             </p>
           ) : null}
         </div>
-        <ArrowUpRight className="mt-1 size-4 shrink-0 text-white/25 transition-colors group-hover:text-foreground" />
+        <ArrowUpRight className="mt-1 size-4 shrink-0 text-foreground/25 transition-colors group-hover:text-foreground" />
       </div>
       {numberOnly ? (
         <div className="flex flex-1 items-center py-8">
-          <p className="font-sans text-[clamp(3rem,7vw,5.25rem)] text-white/55 leading-none tracking-[-0.04em]">
+          <p className="font-sans text-[clamp(3rem,7vw,5.25rem)] text-foreground/55 leading-none tracking-[-0.04em]">
             {value}
           </p>
         </div>
       ) : (
         <div className="my-auto py-8 empty:hidden">{children}</div>
       )}
-      <p className="font-sans text-[13px] text-white/50 leading-[1.5]">{desc}</p>
+      <p className="font-sans text-[13px] text-foreground/50 leading-[1.5]">{desc}</p>
     </Link>
   )
 }

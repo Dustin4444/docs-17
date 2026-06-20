@@ -91,12 +91,12 @@ export default function UptimeStrip({ runs, status }: { runs: PerfRun[]; status:
                 status === 'operational' ? 'indicator-flow' : 'bg-warning'
               }`}
             />
-            <p className="font-mono text-[11px] text-white/60 uppercase tracking-wider">
+            <p className="font-mono text-[11px] text-foreground/60 uppercase tracking-wider">
               {status === 'operational' ? 'All systems operational' : status.replace(/_/g, ' ')}
             </p>
           </div>
         ) : null}
-        <p className="ml-auto font-mono text-[11px] text-white/40 uppercase tracking-wider">
+        <p className="ml-auto font-mono text-[11px] text-foreground/40 uppercase tracking-wider">
           Last {DAYS} nights
         </p>
       </div>
@@ -138,14 +138,14 @@ export default function UptimeStrip({ runs, status }: { runs: PerfRun[]; status:
 
         {active && hover !== null ? (
           <ChartTooltip x={step * hover + step / 2} width={width}>
-            <p className="whitespace-nowrap font-mono text-[11px] text-white/40">
+            <p className="whitespace-nowrap font-mono text-[11px] text-foreground/40">
               {nightLabel(active.date)}
             </p>
             <p className="mt-1 whitespace-nowrap font-mono text-[13px] text-foreground">
               Operational
             </p>
             {active.run ? (
-              <p className="mt-0.5 whitespace-nowrap font-mono text-[11px] text-white/40">
+              <p className="mt-0.5 whitespace-nowrap font-mono text-[11px] text-foreground/40">
                 {fmtInt(active.run.settledTps)} TPS settled · {fmtInt(active.run.blockCount)} blocks
               </p>
             ) : null}
@@ -153,7 +153,7 @@ export default function UptimeStrip({ runs, status }: { runs: PerfRun[]; status:
         ) : null}
       </div>
 
-      <div className="mt-3 flex items-center justify-between font-mono text-[10px] text-white/35 uppercase tracking-wider">
+      <div className="mt-3 flex items-center justify-between font-mono text-[10px] text-foreground/35 uppercase tracking-wider">
         <span>{nightLabel(nights[0].date)}</span>
         <span>{nightLabel(nights[n - 1].date)}</span>
       </div>

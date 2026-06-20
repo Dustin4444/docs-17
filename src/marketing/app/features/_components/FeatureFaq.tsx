@@ -36,7 +36,7 @@ export default function FeatureFaq({
             <h2 className="max-w-[520px] text-balance font-sans text-[clamp(2rem,6vw,3rem)] text-foreground leading-[1.08] tracking-[-0.03em] antialiased">
               {title}
             </h2>
-            <p className="mt-5 max-w-[500px] font-sans text-[16px] text-white/50 leading-[1.5] tracking-[0]">
+            <p className="mt-5 max-w-[500px] font-sans text-[16px] text-foreground/50 leading-[1.5] tracking-[0]">
               {intro}
             </p>
           </div>
@@ -66,7 +66,7 @@ export default function FeatureFaq({
                     <span
                       aria-hidden
                       className={`mt-1 grid size-6 shrink-0 place-items-center border border-line font-mono text-[16px] leading-none transition-colors ${
-                        isActive ? 'bg-foreground text-background' : 'text-white/45'
+                        isActive ? 'bg-foreground text-background' : 'text-foreground/45'
                       }`}
                     >
                       {isActive ? '-' : '+'}
@@ -83,7 +83,7 @@ export default function FeatureFaq({
                     }`}
                   >
                     <div className="overflow-hidden">
-                      <p className="font-sans text-[16px] text-white/50 leading-[1.55] tracking-[0]">
+                      <p className="font-sans text-[16px] text-foreground/50 leading-[1.55] tracking-[0]">
                         {item.answer.map((part) =>
                           typeof part === 'string' ? (
                             <Fragment key={part}>{part}</Fragment>
@@ -93,7 +93,7 @@ export default function FeatureFaq({
                               href={part.href}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-white/75 underline decoration-white/25 underline-offset-4 transition-colors hover:text-white hover:decoration-white"
+                              className="text-foreground/75 underline decoration-foreground/25 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground"
                             >
                               {part.text}
                             </a>

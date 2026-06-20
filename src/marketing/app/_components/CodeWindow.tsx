@@ -48,7 +48,7 @@ export default function CodeWindow({
         <span aria-hidden className="size-3 shrink-0 rounded-full bg-[#FF5F57]" />
         <span aria-hidden className="size-3 shrink-0 rounded-full bg-[#FEBC2E]" />
         <span aria-hidden className="size-3 shrink-0 rounded-full bg-[#28C840]" />
-        <span className="pointer-events-none absolute inset-x-0 text-center font-mono text-[12px] text-white/35 tracking-[0.02em]">
+        <span className="pointer-events-none absolute inset-x-0 text-center font-mono text-[12px] text-foreground/35 tracking-[0.02em]">
           {title}
         </span>
       </div>
@@ -63,7 +63,7 @@ export default function CodeWindow({
               className={`h-11 border-line border-r px-4 font-mono text-[11px] uppercase tracking-[0.12em] transition-colors last:border-r-0 ${
                 active === panel
                   ? 'bg-surface-card-elev text-foreground'
-                  : 'text-white/40 hover:bg-surface-card hover:text-white/70'
+                  : 'text-foreground/40 hover:bg-surface-card hover:text-foreground/70'
               }`}
             >
               {panel.lang}

@@ -53,7 +53,7 @@ export default function FeaturePage({ params }: { params: FeatureParams }) {
             <h1 className="text-balance font-sans text-[clamp(2.5rem,7vw,3.5rem)] text-foreground leading-[1.05] tracking-[-0.03em] antialiased">
               {feature.title}
             </h1>
-            <p className="mt-5 max-w-[560px] text-balance font-sans text-[16px] text-white/50 leading-[1.5] tracking-[0] lg:text-[18px]">
+            <p className="mt-5 max-w-[560px] text-balance font-sans text-[16px] text-foreground/50 leading-[1.5] tracking-[0] lg:text-[18px]">
               {feature.description}
             </p>
             <div className="mt-9 flex flex-col items-stretch gap-2.5 sm:flex-row sm:items-center">
@@ -96,7 +96,7 @@ export default function FeaturePage({ params }: { params: FeatureParams }) {
                     <h3 className="font-sans text-[20px] text-foreground tracking-[0] lg:text-[24px]">
                       {item.label}
                     </h3>
-                    <p className="text-pretty font-sans text-[16px] text-white/50 leading-[1.4] tracking-[0] lg:max-w-[360px]">
+                    <p className="text-pretty font-sans text-[16px] text-foreground/50 leading-[1.4] tracking-[0] lg:max-w-[360px]">
                       {item.desc}
                     </p>
                   </div>

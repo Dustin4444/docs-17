@@ -205,12 +205,12 @@ export default function TpsTrendChart({
 
       {active && hover !== null ? (
         <ChartTooltip x={points[hover][0]} width={width}>
-          <p className="whitespace-nowrap font-mono text-[11px] text-white/40">
+          <p className="whitespace-nowrap font-mono text-[11px] text-foreground/40">
             {active.dateLabel} · {active.timeLabel}
           </p>
           <p className="mt-1 whitespace-nowrap font-mono text-[13px] text-foreground">
             {fmtInt(active.settledTps)}{' '}
-            <span className="text-white/40">transactions per second</span>
+            <span className="text-foreground/40">transactions per second</span>
           </p>
         </ChartTooltip>
       ) : null}

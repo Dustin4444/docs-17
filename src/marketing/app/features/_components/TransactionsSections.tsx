@@ -353,7 +353,7 @@ function AccessKeysSection() {
               <h2 className="max-w-[560px] text-balance font-sans text-[clamp(2rem,6vw,3rem)] text-foreground leading-[1.08] tracking-[-0.03em] antialiased">
                 Set spending limits using access keys.
               </h2>
-              <p className="mt-5 max-w-[540px] font-sans text-[16px] text-white/50 leading-[1.5] tracking-[0]">
+              <p className="mt-5 max-w-[540px] font-sans text-[16px] text-foreground/50 leading-[1.5] tracking-[0]">
                 Authorize scoped keys with spending limits and expiry so apps and agents can move
                 approved funds without repeated user prompts.
               </p>
@@ -380,7 +380,7 @@ function AccessKeysSection() {
                   <h3 className="font-sans text-[18px] text-foreground leading-[1.2] tracking-[0]">
                     {item.title}
                   </h3>
-                  <p className="mt-2 font-sans text-[14px] text-white/45 leading-[1.45] tracking-[0] group-hover:text-white/55">
+                  <p className="mt-2 font-sans text-[14px] text-foreground/45 leading-[1.45] tracking-[0] group-hover:text-foreground/55">
                     {item.desc}
                   </p>
                 </Link>
@@ -409,7 +409,7 @@ function PrimitiveGroupSection({ group, index }: { group: PrimitiveGroup; index:
           <h2 className="text-balance font-sans text-[clamp(2rem,6vw,3rem)] text-foreground leading-[1.08] tracking-[-0.03em] antialiased">
             {group.title}
           </h2>
-          <p className="mt-5 max-w-[560px] text-balance font-sans text-[16px] text-white/50 leading-[1.5] tracking-[0] lg:text-[18px]">
+          <p className="mt-5 max-w-[560px] text-balance font-sans text-[16px] text-foreground/50 leading-[1.5] tracking-[0] lg:text-[18px]">
             {group.desc}
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-2.5">
@@ -441,7 +441,7 @@ function PrimitiveGroupSection({ group, index }: { group: PrimitiveGroup; index:
                   className={`group flex h-full w-full flex-col gap-3 p-7 text-left transition-colors lg:p-8 ${
                     active === i
                       ? 'bg-surface-block text-foreground'
-                      : 'text-white/55 hover:bg-surface-block hover:text-white/80'
+                      : 'text-foreground/55 hover:bg-surface-block hover:text-foreground/80'
                   }`}
                 >
                   <span className="flex items-center gap-3">
@@ -457,7 +457,7 @@ function PrimitiveGroupSection({ group, index }: { group: PrimitiveGroup; index:
                       {item.title}
                     </span>
                   </span>
-                  <span className="max-w-[480px] font-sans text-[16px] text-white/45 leading-[1.4] tracking-[0] group-hover:text-white/55">
+                  <span className="max-w-[480px] font-sans text-[16px] text-foreground/45 leading-[1.4] tracking-[0] group-hover:text-foreground/55">
                     {item.desc}
                   </span>
                 </Link>
