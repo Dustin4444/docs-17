@@ -10,6 +10,8 @@ import {
 } from 'react'
 import { createRoot } from 'react-dom/client'
 import '../pages/_root.css'
+import Header from './app/_components/Header'
+import TpsTrendChartFrame from './app/performance/_components/TpsTrendChartFrame'
 import HomePage from './HomePage'
 
 const loadDiagramsPage = () => import('./DiagramsPage')
@@ -78,6 +80,47 @@ const routeMetadata: Record<string, { title: string; description: string }> = {
     title: 'Tempo Diagrams',
     description: 'A playground for Tempo diagrams, product visuals, and house-style SVG exports.',
   },
+}
+
+function FallbackSkeleton({ className }: { className: string }) {
+  return (
+    <span
+      aria-hidden
+      className={`block animate-pulse bg-surface-skeleton/35 motion-reduce:animate-none ${className}`}
+    />
+  )
+}
+
+function PerformanceRouteFallback() {
+  return (
+    <main className="min-h-screen w-full bg-surface-page">
+      <div className="mx-auto w-full max-w-7xl border-line border-x bg-surface-shell">
+        <Header />
+        <section className="relative border-line border-b px-5 pt-20 pb-12 lg:px-8 lg:pt-28">
+          <div className="flex flex-col items-center text-center">
+            <h1 className="max-w-[880px] text-balance font-sans text-[clamp(2.5rem,6vw,3.5rem)] text-foreground leading-[1.05] tracking-[-0.03em] antialiased">
+              Pushing the frontier of blockchain performance.
+            </h1>
+          </div>
+
+          <div className="mt-16">
+            <TpsTrendChartFrame />
+            <div className="mt-5 text-center">
+              <p className="font-sans text-[20px] text-foreground leading-tight tracking-[0]">
+                Transactions per second
+              </p>
+              <FallbackSkeleton className="mx-auto mt-2 h-4 w-[300px] max-w-[70vw]" />
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  )
+}
+
+function RouteFallback({ route }: { route: string }) {
+  if (route === '/performance') return <PerformanceRouteFallback />
+  return null
 }
 
 function isMarketingRoute(pathname: string) {
@@ -219,7 +262,7 @@ function MarketingApp() {
 
   return (
     <>
-      <Suspense fallback={null}>{renderRoute(route)}</Suspense>
+      <Suspense fallback={<RouteFallback route={route} />}>{renderRoute(route)}</Suspense>
       {analyticsReady && (
         <Suspense fallback={null}>
           <SpeedInsights route={route} />

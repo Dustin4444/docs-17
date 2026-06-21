@@ -6,6 +6,12 @@ import { useEffect, useState } from 'react'
 import { linePath, scaleLinear, ticks } from '../_lib/chart'
 import { fmtInt, type PerfRun } from '../_lib/runs'
 import ChartTooltip from './ChartTooltip'
+import {
+  TPS_CHART_PAD as PAD,
+  TPS_CHART_DEFAULT_DOMAIN,
+  TPS_CHART_DEFAULT_TICKS,
+  TpsChartGrid,
+} from './TpsTrendChartFrame'
 import useMeasure from './useMeasure'
 
 // Vercel-hero-style throughput chart: settled TPS per nightly run, drawn with
@@ -13,7 +19,6 @@ import useMeasure from './useMeasure'
 // gradient color) and a hover crosshair + data card. The line draws itself
 // left-to-right on mount, with each dot popping in as the stroke reaches it.
 
-const PAD = { l: 48, r: 110, t: 20, b: 28 }
 const DRAW_MS = 1600
 
 export default function TpsTrendChart({
@@ -67,12 +72,17 @@ export default function TpsTrendChart({
   const values = runs.map((r) => r.settledTps)
   const min = Math.min(...values)
   const max = Math.max(...values)
+  const dynamicYDomain = [min * 0.9, max * 1.06] as [number, number]
+  const stableYDomainFits =
+    dynamicYDomain[0] >= TPS_CHART_DEFAULT_DOMAIN[0] &&
+    dynamicYDomain[1] <= TPS_CHART_DEFAULT_DOMAIN[1]
+  const yDomain = stableYDomainFits ? TPS_CHART_DEFAULT_DOMAIN : dynamicYDomain
+  const yTicks = stableYDomainFits ? TPS_CHART_DEFAULT_TICKS : ticks(yDomain[0], yDomain[1], 4)
 
   const xAt = scaleLinear([0, n - 1], [PAD.l, Math.max(width - PAD.r, PAD.l + 1)])
-  const yAt = scaleLinear([min * 0.9, max * 1.06], [height - PAD.b, PAD.t])
+  const yAt = scaleLinear(yDomain, [height - PAD.b, PAD.t])
   const points = values.map((v, i) => [xAt(i), yAt(v)] as [number, number])
 
-  const yTicks = ticks(min * 0.9, max * 1.06, 4)
   const labelStep = Math.ceil(n / 6)
 
   const onMove = (e: React.PointerEvent<SVGRectElement>) => {
@@ -105,19 +115,7 @@ export default function TpsTrendChart({
             </linearGradient>
           </defs>
 
-          {yTicks.map((t) => (
-            <g key={t}>
-              <line x1={PAD.l} x2={width - PAD.r} y1={yAt(t)} y2={yAt(t)} stroke="var(--line)" />
-              <text
-                x={PAD.l - 10}
-                y={yAt(t) + 4}
-                textAnchor="end"
-                className="fill-white/35 font-mono text-[11px]"
-              >
-                {Math.round(t / 1000)}K
-              </text>
-            </g>
-          ))}
+          <TpsChartGrid height={height} width={width} yDomain={yDomain} yTicks={yTicks} />
 
           {runs.map((r, i) =>
             i === 0 || i === last || i % labelStep === 0 ? (
