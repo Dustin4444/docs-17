@@ -813,22 +813,12 @@ function SidebarNodes({
   )
 }
 
-function DocsSidebarNav({ pathname, onNavigate }: { pathname: string; onNavigate: () => void }) {
-  const config = useConfig()
-  const items = resolveSidebarItems(config?.sidebar, pathname)
-  if (items.length === 0) return null
-  return (
-    <div className="flex flex-col border-line border-t pt-2 pb-1">
-      <SidebarNodes nodes={items} pathname={pathname} depth={0} onNavigate={onNavigate} />
-    </div>
-  )
-}
-
 export default function DocsHeader() {
   const pathname = usePathname()
+  const config = useConfig()
+  const docsSidebarItems = resolveSidebarItems(config?.sidebar, pathname)
   const [open, setOpen] = useState(false)
   const [expanded, setExpanded] = useState<string | null>(null)
-  const [siteNavOpen, setSiteNavOpen] = useState(false)
   const [activeMenu, setActiveMenu] = useState<string | null>(null)
   const [geom, setGeom] = useState<{ x: number; w: number; h: number } | null>(null)
   const [morphing, setMorphing] = useState(false)
@@ -883,12 +873,7 @@ export default function DocsHeader() {
   const close = () => {
     setOpen(false)
     setExpanded(null)
-    setSiteNavOpen(false)
   }
-
-  // The active top-level site section (e.g. "Docs"), shown as the label of the
-  // compact site-nav switcher pinned above the docs sidebar.
-  const activeSiteLabel = menu.find((item) => isActiveMenuItem(pathname, item))?.label ?? 'Menu'
 
   useEffect(() => {
     warmMarketingApp()
@@ -1083,100 +1068,110 @@ export default function DocsHeader() {
         }`}
       >
         <div className="flex max-h-[calc(100dvh-var(--vocs-spacing-topNav,65px))] w-full flex-col overflow-y-auto border-line border-x border-b bg-background px-5 pb-5">
-          {/* Compact site-section switcher: keeps the full site nav one tap away
-              without taking the vertical space the docs sidebar needs. */}
-          <div className="pt-4">
-            <button
-              type="button"
-              onClick={() => setSiteNavOpen((value) => !value)}
-              aria-expanded={siteNavOpen}
-              className="flex w-full items-center justify-between rounded-md border border-line bg-surface-shell px-3.5 py-2.5 font-sans text-[15px] text-foreground tracking-[0]"
-            >
-              {activeSiteLabel}
-              <Chevron open={siteNavOpen} />
-            </button>
-            <div
-              className={`grid overflow-hidden transition-[grid-template-rows] duration-300 ease-out ${siteNavOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
-            >
-              <div className="min-h-0 overflow-hidden">
-                <div className="flex flex-col pt-1">
-                  {menu.map((item) => {
-                    const active = isActiveMenuItem(pathname, item)
-                    return item.mega ? (
-                      <div key={item.label} className="border-line border-t">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setExpanded((value) => (value === item.label ? null : item.label))
-                          }
-                          aria-expanded={expanded === item.label}
-                          className="flex w-full items-center justify-between py-4 font-sans text-[16px] text-foreground tracking-[0]"
-                        >
-                          <span className="flex items-center gap-2">
-                            {active ? <ActiveSquare activeKey={pathname} /> : null}
-                            {item.label}
-                          </span>
-                          <Chevron open={expanded === item.label} />
-                        </button>
-                        <div
-                          className={`grid overflow-hidden transition-[grid-template-rows] duration-300 ease-out ${expanded === item.label ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
-                        >
-                          <div className="min-h-0 overflow-hidden">
-                            <div className="flex flex-col gap-3 pb-4 pl-3">
-                              {megaLinks(item.mega).map((sub) => (
-                                <Anchor
-                                  key={sub.label}
-                                  href={sub.href}
-                                  onClick={close}
-                                  className="flex items-start gap-1.5 font-sans text-[15px] text-foreground/50 tracking-[0] transition-colors hover:text-foreground"
-                                >
-                                  {sub.label}
-                                  {isExternal(sub.href) ? (
-                                    <ArrowUpRight className="mt-0.5 size-3" />
-                                  ) : null}
-                                </Anchor>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <Anchor
-                        key={item.label}
-                        href={item.href}
-                        onClick={close}
-                        className="flex items-start gap-1.5 border-line border-t py-4 font-sans text-[16px] text-foreground tracking-[0]"
-                      >
-                        {active ? <ActiveSquare activeKey={pathname} /> : null}
-                        {item.label}
-                      </Anchor>
-                    )
-                  })}
-                  <div className="border-line border-t">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setExpanded((value) => (value === 'For agents' ? null : 'For agents'))
-                      }
-                      aria-expanded={expanded === 'For agents'}
-                      className="flex w-full items-center justify-between py-4 font-sans text-[16px] text-foreground tracking-[0]"
-                    >
-                      For agents
-                      <Chevron open={expanded === 'For agents'} />
-                    </button>
-                    <div
-                      className={`grid overflow-hidden transition-[grid-template-rows] duration-300 ease-out ${expanded === 'For agents' ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
-                    >
-                      <div className="min-h-0 overflow-hidden">
-                        <AgentsPanel variant="mobile" onNavigate={close} />
+          {menu.map((item) => {
+            const active = isActiveMenuItem(pathname, item)
+            // The "Docs" item is the entry point to the docs sidebar: on docs
+            // pages it expands inline to reveal the page tree instead of being a
+            // plain link, matching the mega-menu accordion pattern.
+            const isDocsEntry = item.label === 'Docs' && docsSidebarItems.length > 0
+            if (isDocsEntry) {
+              return (
+                <div key={item.label} className="border-line border-t">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setExpanded((value) => (value === item.label ? null : item.label))
+                    }
+                    aria-expanded={expanded === item.label}
+                    className="flex w-full items-center justify-between py-4 font-sans text-[16px] text-foreground tracking-[0]"
+                  >
+                    <span className="flex items-center gap-2">
+                      {active ? <ActiveSquare activeKey={pathname} /> : null}
+                      {item.label}
+                    </span>
+                    <Chevron open={expanded === item.label} />
+                  </button>
+                  <div
+                    className={`grid overflow-hidden transition-[grid-template-rows] duration-300 ease-out ${expanded === item.label ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
+                  >
+                    <div className="min-h-0 overflow-hidden">
+                      <div className="flex flex-col pb-2 pl-3">
+                        <SidebarNodes
+                          nodes={docsSidebarItems}
+                          pathname={pathname}
+                          depth={0}
+                          onNavigate={close}
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
+              )
+            }
+            return item.mega ? (
+              <div key={item.label} className="border-line border-t">
+                <button
+                  type="button"
+                  onClick={() => setExpanded((value) => (value === item.label ? null : item.label))}
+                  aria-expanded={expanded === item.label}
+                  className="flex w-full items-center justify-between py-4 font-sans text-[16px] text-foreground tracking-[0]"
+                >
+                  <span className="flex items-center gap-2">
+                    {active ? <ActiveSquare activeKey={pathname} /> : null}
+                    {item.label}
+                  </span>
+                  <Chevron open={expanded === item.label} />
+                </button>
+                <div
+                  className={`grid overflow-hidden transition-[grid-template-rows] duration-300 ease-out ${expanded === item.label ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
+                >
+                  <div className="min-h-0 overflow-hidden">
+                    <div className="flex flex-col gap-3 pb-4 pl-3">
+                      {megaLinks(item.mega).map((sub) => (
+                        <Anchor
+                          key={sub.label}
+                          href={sub.href}
+                          onClick={close}
+                          className="flex items-start gap-1.5 font-sans text-[15px] text-foreground/50 tracking-[0] transition-colors hover:text-foreground"
+                        >
+                          {sub.label}
+                          {isExternal(sub.href) ? <ArrowUpRight className="mt-0.5 size-3" /> : null}
+                        </Anchor>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <Anchor
+                key={item.label}
+                href={item.href}
+                onClick={close}
+                className="flex items-start gap-1.5 border-line border-t py-4 font-sans text-[16px] text-foreground tracking-[0]"
+              >
+                {active ? <ActiveSquare activeKey={pathname} /> : null}
+                {item.label}
+              </Anchor>
+            )
+          })}
+          <div className="border-line border-t">
+            <button
+              type="button"
+              onClick={() => setExpanded((value) => (value === 'For agents' ? null : 'For agents'))}
+              aria-expanded={expanded === 'For agents'}
+              className="flex w-full items-center justify-between py-4 font-sans text-[16px] text-foreground tracking-[0]"
+            >
+              For agents
+              <Chevron open={expanded === 'For agents'} />
+            </button>
+            <div
+              className={`grid overflow-hidden transition-[grid-template-rows] duration-300 ease-out ${expanded === 'For agents' ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
+            >
+              <div className="min-h-0 overflow-hidden">
+                <AgentsPanel variant="mobile" onNavigate={close} />
               </div>
             </div>
           </div>
-          <DocsSidebarNav pathname={pathname} onNavigate={close} />
         </div>
       </div>
     </header>
