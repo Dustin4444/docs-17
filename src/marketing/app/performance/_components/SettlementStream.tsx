@@ -8,7 +8,14 @@ import useMeasure from './useMeasure'
 // The settlement story as a live conveyor: Viem watches Tempo's finalized
 // chain head and pushes each real block into the stream. Since finalized heads
 // are already settled, every cell represents an observed finalized block; the
-// per-block interval is measured from actual client receipt times.
+// per-block interval is measured from each block's on-chain millisecond
+// timestamp (`timestampMillis`), so it stays accurate even when polling catches
+// up several finalized blocks at once.
+
+// Tempo blocks carry a millisecond-precision Unix timestamp that standard EVM
+// blocks lack. It is not part of viem's block type, so we read it off the raw
+// block as a hex string.
+type TempoBlock = { number: bigint | null; timestampMillis?: `0x${string}` }
 
 const TEMPO_RPC_URL = 'https://rpc.tempo.xyz'
 const TEMPO_EXPLORER_BLOCK_URL = 'https://explore.tempo.xyz/block'
@@ -46,7 +53,7 @@ export default function SettlementStream({ runs }: { runs: PerfRun[] }) {
   const [isLive, setIsLive] = useState(false)
 
   useEffect(() => {
-    let previousReceivedAt: number | null = null
+    let previousTimestampMs: number | null = null
     const unwatch = client.watchBlocks({
       blockTag: 'finalized',
       emitMissed: true,
@@ -54,12 +61,13 @@ export default function SettlementStream({ runs }: { runs: PerfRun[] }) {
       pollingInterval: POLL_MS,
       onBlock: (block) => {
         if (block.number === null) return
-        const receivedAt = performance.now()
+        const rawTimestamp = (block as TempoBlock).timestampMillis
+        const timestampMs = rawTimestamp != null ? Number(rawTimestamp) : null
         const measuredInterval =
-          previousReceivedAt === null
+          timestampMs === null || previousTimestampMs === null
             ? null
-            : Math.max(Math.round(receivedAt - previousReceivedAt), 0)
-        previousReceivedAt = receivedAt
+            : Math.max(Math.round(timestampMs - previousTimestampMs), 0)
+        if (timestampMs !== null) previousTimestampMs = timestampMs
         setIsLive(true)
         setBlocks((prev) => {
           if (prev.some(({ height }) => height === block.number)) return prev
