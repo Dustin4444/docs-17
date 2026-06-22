@@ -1067,7 +1067,7 @@ export default function DocsHeader() {
             : 'pointer-events-none -translate-y-2 opacity-0'
         }`}
       >
-        <div className="flex max-h-[calc(100dvh-var(--vocs-spacing-topNav,65px))] w-full flex-col overflow-y-auto border-line border-x border-b bg-background px-5 pb-5">
+        <div className="flex h-[calc(100dvh-var(--vocs-spacing-topNav,65px))] w-full flex-col overflow-y-auto border-line border-x border-b bg-background px-5 pb-5">
           {menu.map((item) => {
             const active = isActiveMenuItem(pathname, item)
             // The "Docs" item is the entry point to the docs sidebar: on docs
