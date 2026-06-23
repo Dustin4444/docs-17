@@ -5,7 +5,6 @@ import {
   absoluteUrl,
   blogOgImageUrl,
   blogPostJsonLd,
-  ogImageUrl,
   type PostSeo,
   resolveBaseUrl,
 } from '../../marketing/seo'
@@ -44,9 +43,7 @@ export default function Page({ slug }: { slug: string }) {
   const title = post?.metaTitle ?? BLOG_TITLE
   const description = post?.metaDescription ?? BLOG_DESCRIPTION
   const canonical = absoluteUrl(base, post ? `/blog/${slug}` : '/blog')
-  const ogImage = post
-    ? blogOgImageUrl(base, post)
-    : ogImageUrl(base, { title, description, section: 'BLOG', eyebrow: 'DEV BLOG' })
+  const ogImage = post ? blogOgImageUrl(base, post) : ''
 
   return (
     <>
@@ -55,13 +52,7 @@ export default function Page({ slug }: { slug: string }) {
       {base ? <link rel="canonical" href={canonical} /> : null}
       <meta property="og:type" content={post ? 'article' : 'website'} />
       <meta property="og:url" content={canonical} />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      <meta property="og:image" content={ogImage} />
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
-      <meta property="twitter:image" content={ogImage} />
       {post ? <meta property="article:published_time" content={post.date} /> : null}
       {post ? (
         <meta property="article:section" content={categoryBySlug(post.category).label} />
