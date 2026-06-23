@@ -430,7 +430,7 @@ function MenuIcon() {
   )
 }
 
-function SearchIcon({ className }: { className?: string }) {
+export function SearchIcon({ className }: { className?: string }) {
   return (
     // biome-ignore lint/a11y/noSvgWithoutTitle: Button provides the accessible label.
     <svg
@@ -457,7 +457,7 @@ function SearchIcon({ className }: { className?: string }) {
 // importing that internal, unexported component, we re-expose the affordance by
 // dispatching the same shortcut Vocs already handles. See src/pages/_root.css
 // where the gutter is hidden, and node_modules/vocs Search.tsx for the listener.
-function openDocsSearch() {
+export function openDocsSearch() {
   if (typeof document === 'undefined') return
   const event = new KeyboardEvent('keydown', {
     key: 'k',
