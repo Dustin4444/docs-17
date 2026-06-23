@@ -4,6 +4,7 @@ import BlogPostRoute from '../../marketing/BlogPostRoute'
 import {
   absoluteUrl,
   blogPostJsonLd,
+  blogThumbnailUrl,
   ogImageUrl,
   type PostSeo,
   resolveBaseUrl,
@@ -20,8 +21,11 @@ const postBySlug = new Map<string, PostSeo>(
       slug: post.slug,
       title: post.title,
       excerpt: post.excerpt,
+      metaTitle: post.metaTitle,
+      metaDescription: post.metaDescription,
       date: post.date,
       category: post.category as CategorySlug,
+      thumbnail: post.thumbnail,
     },
   ]),
 )
@@ -38,10 +42,12 @@ export default function Page({ slug }: { slug: string }) {
   const base = resolveBaseUrl()
   const post = postBySlug.get(slug)
 
-  const title = post ? `${post.title} — Tempo Developers` : BLOG_TITLE
-  const description = post?.excerpt ?? BLOG_DESCRIPTION
+  const title = post?.metaTitle ?? BLOG_TITLE
+  const description = post?.metaDescription ?? BLOG_DESCRIPTION
   const canonical = absoluteUrl(base, post ? `/blog/${slug}` : '/blog')
-  const ogImage = ogImageUrl(base, { title, description, section: 'BLOG' })
+  const ogImage = post
+    ? blogThumbnailUrl(base, post)
+    : ogImageUrl(base, { title, description, section: 'BLOG', eyebrow: 'DEV BLOG' })
 
   return (
     <>

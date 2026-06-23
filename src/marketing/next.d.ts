@@ -7,9 +7,12 @@ declare module 'virtual:blog-posts' {
     slug: string
     title: string
     excerpt: string
+    metaTitle: string
+    metaDescription: string
     date: string
     category: string
     featured: boolean
+    thumbnail: string
     html: string
   }[]
 }
