@@ -32,6 +32,7 @@ export default defineConfig(({ mode }) => {
       marketingSearchIndexPlugin({ source: 'vocs' }),
       marketingPages(),
       vocs(),
+      removePlaceholderSitemapRoutes(),
       Icons({ compiler: 'jsx', jsx: 'react' }),
       react(),
       ...(useHttp ? [] : [mkcert()]),
@@ -97,6 +98,44 @@ function marketingPages(): Plugin {
         res.end(html)
       })
     },
+  }
+}
+
+function removePlaceholderSitemapRoutes(): Plugin {
+  return {
+    name: 'tempo-remove-placeholder-sitemap-routes',
+    async closeBundle() {
+      const publicDir = path.resolve(process.cwd(), 'dist/public')
+      const sitemapFiles = await findSitemapFiles(publicDir)
+
+      await Promise.all(
+        sitemapFiles.map(async (file) => {
+          const sitemap = await fs.readFile(file, 'utf-8')
+          const filtered = sitemap.replace(
+            /<url>\s*<loc>[^<]*(?:%5B|\[)[^<]*(?:%5D|\])[^<]*<\/loc>[\s\S]*?<\/url>\s*/gi,
+            '',
+          )
+          if (filtered !== sitemap) await fs.writeFile(file, filtered)
+        }),
+      )
+    },
+  }
+}
+
+async function findSitemapFiles(directory: string): Promise<string[]> {
+  try {
+    const entries = await fs.readdir(directory, { withFileTypes: true })
+    const files = await Promise.all(
+      entries.map(async (entry) => {
+        const entryPath = path.join(directory, entry.name)
+        if (entry.isDirectory()) return findSitemapFiles(entryPath)
+        if (entry.isFile() && /^sitemap.*\.xml$/.test(entry.name)) return [entryPath]
+        return []
+      }),
+    )
+    return files.flat()
+  } catch {
+    return []
   }
 }
 
