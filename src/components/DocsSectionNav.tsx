@@ -106,9 +106,9 @@ export default function DocsSectionNav() {
       <nav
         ref={navRef}
         aria-label="Documentation sections"
-        className="flex h-[var(--tempo-docs-section-nav-height)] items-center overflow-x-auto px-3 [scrollbar-width:none] sm:px-5 [&::-webkit-scrollbar]:hidden"
+        className="flex h-[var(--tempo-docs-section-nav-height)] items-stretch overflow-x-auto px-4 [scrollbar-width:none] sm:px-6 [&::-webkit-scrollbar]:hidden"
       >
-        <ul className="flex min-w-max items-center gap-1">
+        <ul className="flex min-w-max items-stretch gap-8">
           {sectionNavItems.map((item) => {
             const active = isActive(pathname, item)
             return (
@@ -119,10 +119,10 @@ export default function DocsSectionNav() {
                   }}
                   href={item.href}
                   aria-current={active ? 'page' : undefined}
-                  className={`flex h-8 items-center rounded-[4px] px-3 font-sans text-[13px] tracking-[0] transition-colors ${
+                  className={`flex h-full items-center border-b-2 pt-0.5 font-sans text-[14px] tracking-[0] transition-colors ${
                     active
-                      ? 'bg-foreground/[0.06] text-foreground'
-                      : 'text-foreground/50 hover:bg-foreground/[0.035] hover:text-foreground'
+                      ? 'border-foreground font-medium text-foreground'
+                      : 'border-transparent text-foreground/50 hover:text-foreground'
                   }`}
                 >
                   {item.label}
