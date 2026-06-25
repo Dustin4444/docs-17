@@ -102,36 +102,148 @@ export default function DocsSectionNav() {
   }, [activeLabel])
 
   return (
-    <div className="docs-section-nav border-line border-x border-b bg-surface-shell">
-      <nav
-        ref={navRef}
-        aria-label="Documentation sections"
-        className="flex h-[var(--tempo-docs-section-nav-height)] items-stretch overflow-x-auto px-4 [scrollbar-width:none] sm:px-6 [&::-webkit-scrollbar]:hidden"
-      >
-        <ul className="flex min-w-max items-stretch gap-8">
-          {sectionNavItems.map((item) => {
-            const active = isActive(pathname, item)
-            return (
-              <li key={item.id}>
-                <a
-                  ref={(element) => {
-                    if (active) activeLinkRef.current = element
-                  }}
-                  href={item.href}
-                  aria-current={active ? 'page' : undefined}
-                  className={`flex h-full items-center border-b-2 pt-0.5 font-sans text-[14px] tracking-[0] transition-colors ${
-                    active
-                      ? 'border-foreground font-medium text-foreground'
-                      : 'border-transparent text-foreground/50 hover:text-foreground'
-                  }`}
-                >
-                  {item.label}
-                </a>
-              </li>
-            )
-          })}
-        </ul>
-      </nav>
-    </div>
+    <>
+      <style>{`
+        @media (width >= 1024px) {
+          body:has(.docs-section-nav) nav:has(> a[aria-label='Tempo home']) {
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr) minmax(300px, 460px) minmax(0, 1fr) !important;
+            align-items: center !important;
+            gap: 12px !important;
+            padding-inline: 20px !important;
+          }
+
+          body:has(.docs-section-nav) nav:has(> a[aria-label='Tempo home']) > ul {
+            display: none !important;
+          }
+
+          body:has(.docs-section-nav) nav:has(> a[aria-label='Tempo home']) > a[aria-label='Tempo home'] {
+            min-width: 0;
+          }
+
+          body:has(.docs-section-nav) nav:has(> a[aria-label='Tempo home']) > a[aria-label='Tempo home']::after {
+            content: 'Docs';
+            margin-left: 12px;
+            padding-left: 12px;
+            border-left: 1px solid var(--line);
+            color: color-mix(in srgb, var(--foreground) 80%, transparent);
+            font-family: var(--font-pilat-book), ui-sans-serif, system-ui, sans-serif;
+            font-size: 15px;
+            letter-spacing: 0;
+          }
+
+          body:has(.docs-section-nav) nav:has(> a[aria-label='Tempo home']) > div {
+            grid-column: 3;
+            justify-self: end;
+            gap: 20px !important;
+          }
+
+          body:has(.docs-section-nav) nav:has(> a[aria-label='Tempo home']) > div > button:first-child {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            display: flex !important;
+            width: min(460px, calc(100vw - 560px));
+            min-width: 300px;
+            height: 40px;
+            transform: translate(-50%, -50%);
+            justify-content: space-between;
+            border-radius: 6px;
+            background: var(--background);
+            padding-inline: 14px;
+            color: color-mix(in srgb, var(--foreground) 55%, transparent);
+            font-size: 0 !important;
+            box-shadow: 0 1px 1px rgb(0 0 0 / 0.03);
+          }
+
+          body:has(.docs-section-nav) nav:has(> a[aria-label='Tempo home']) > div > button:first-child::after {
+            content: 'Search docs...';
+            order: 1;
+            margin-right: auto;
+            font-size: 14px;
+          }
+
+          body:has(.docs-section-nav) nav:has(> a[aria-label='Tempo home']) > div > button:first-child svg {
+            order: 0;
+          }
+
+          body:has(.docs-section-nav) nav:has(> a[aria-label='Tempo home']) > div > button:first-child kbd {
+            order: 2;
+            background: var(--surface-input);
+            font-size: 11px !important;
+          }
+        }
+
+        @media (width >= 1080px) {
+          .docs-section-nav {
+            right: max(0px, calc((100% - var(--tempo-docs-shell-width)) * 0.5)) !important;
+            left: max(0px, calc((100% - var(--tempo-docs-shell-width)) * 0.5)) !important;
+          }
+
+          [data-layout][data-v-sidebar] > [data-v-gutter-left] {
+            padding-top: var(--vocs-spacing-topNav) !important;
+          }
+        }
+
+        .docs-header-github-link {
+          display: none;
+        }
+
+        @media (width >= 1280px) {
+          .docs-header-github-link {
+            position: fixed;
+            top: 0;
+            right: 150px;
+            z-index: 80;
+            display: flex;
+            height: var(--tempo-docs-primary-nav-height);
+            align-items: center;
+            color: color-mix(in srgb, var(--foreground) 65%, transparent);
+            font-family: var(--font-pilat-book), ui-sans-serif, system-ui, sans-serif;
+            font-size: 14px;
+            letter-spacing: 0;
+            transition: color 150ms ease;
+          }
+
+          .docs-header-github-link:hover {
+            color: var(--foreground);
+          }
+        }
+      `}</style>
+      <a className="docs-header-github-link" href="https://github.com/tempoxyz">
+        GitHub
+      </a>
+      <div className="docs-section-nav border-line border-x border-b bg-surface-shell">
+        <nav
+          ref={navRef}
+          aria-label="Documentation sections"
+          className="flex h-[var(--tempo-docs-section-nav-height)] items-stretch overflow-x-auto px-4 [scrollbar-width:none] sm:px-6 [&::-webkit-scrollbar]:hidden"
+        >
+          <ul className="flex min-w-max items-stretch gap-8">
+            {sectionNavItems.map((item) => {
+              const active = isActive(pathname, item)
+              return (
+                <li key={item.id}>
+                  <a
+                    ref={(element) => {
+                      if (active) activeLinkRef.current = element
+                    }}
+                    href={item.href}
+                    aria-current={active ? 'page' : undefined}
+                    className={`flex h-full items-center border-b-2 pt-0.5 font-sans text-[14px] tracking-[0] transition-colors ${
+                      active
+                        ? 'border-foreground font-medium text-foreground'
+                        : 'border-transparent text-foreground/50 hover:text-foreground'
+                    }`}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
+        </nav>
+      </div>
+    </>
   )
 }
