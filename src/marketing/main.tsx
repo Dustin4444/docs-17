@@ -31,13 +31,25 @@ const PerformancePage = lazy(loadPerformancePage)
 const FeaturePage = lazy(loadFeaturePage)
 const BlogPage = lazy(loadBlogPage)
 const BlogPostPage = lazy(loadBlogPostPage)
+const DOCS_BASE_PATH = '/developers'
 
 function currentRoute() {
   return normalizeRoutePath(window.location.pathname)
 }
 
 function normalizeRoutePath(pathname: string) {
-  return pathname.replace(/\/$/, '') || '/'
+  const withoutBase =
+    pathname === DOCS_BASE_PATH
+      ? '/'
+      : pathname.startsWith(`${DOCS_BASE_PATH}/`)
+        ? pathname.slice(DOCS_BASE_PATH.length)
+        : pathname
+  return withoutBase.replace(/\/$/, '') || '/'
+}
+
+function withDocsBasePath(pathname: string) {
+  const normalized = normalizeRoutePath(pathname)
+  return normalized === '/' ? DOCS_BASE_PATH : `${DOCS_BASE_PATH}${normalized}`
 }
 
 const prefetchedPaths = new Set<string>()
@@ -50,7 +62,7 @@ function prefetchPath(href: string) {
 
   const link = document.createElement('link')
   link.rel = 'prefetch'
-  link.href = href
+  link.href = withDocsBasePath(href)
   link.as = 'document'
   document.head.appendChild(link)
 }
@@ -232,7 +244,7 @@ function MarketingApp() {
       const nextRoute = normalizeRoutePath(url.pathname)
       pendingScrollRef.current = url.hash
       preloadRoute(nextRoute)
-      window.history.pushState({}, '', `${url.pathname}${url.search}${url.hash}`)
+      window.history.pushState({}, '', `${withDocsBasePath(nextRoute)}${url.search}${url.hash}`)
       if (nextRoute === routeRef.current) {
         applyRouteMetadata(nextRoute)
         scrollToPendingTarget()

@@ -62,10 +62,17 @@ export default defineConfig(({ mode }) => {
   }
 })
 
+const DOCS_BASE_PATH = '/developers'
 const marketingRoutes = ['/', '/build', '/blog', '/performance']
 
+function stripDocsBasePath(pathname: string) {
+  if (pathname === DOCS_BASE_PATH) return '/'
+  if (pathname.startsWith(`${DOCS_BASE_PATH}/`)) return pathname.slice(DOCS_BASE_PATH.length) || '/'
+  return pathname
+}
+
 function isMarketingPath(pathname: string) {
-  const normalized = pathname.replace(/\/$/, '') || '/'
+  const normalized = stripDocsBasePath(pathname).replace(/\/$/, '') || '/'
   // Let requests for actual files (e.g. /blog/foo.svg) fall through to Vite's
   // static asset serving instead of returning the marketing SPA shell.
   const lastSegment = normalized.split('/').pop() ?? ''
@@ -79,7 +86,7 @@ function isMarketingPath(pathname: string) {
 
 async function marketingHtml() {
   const html = await fs.readFile(path.resolve(process.cwd(), 'src/marketing/index.html'), 'utf-8')
-  return html.replace('src="./main.tsx"', 'src="/src/marketing/main.tsx"')
+  return html.replace('src="./main.tsx"', `src="${DOCS_BASE_PATH}/src/marketing/main.tsx"`)
 }
 
 function marketingPages(): Plugin {

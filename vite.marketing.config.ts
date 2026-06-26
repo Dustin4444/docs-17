@@ -16,6 +16,7 @@ import {
 } from './src/marketing/seo'
 
 const siteBaseUrl = resolveBaseUrl()
+const DOCS_BASE_PATH = '/developers'
 
 const staticRouteCopies = [
   'build',
@@ -45,13 +46,16 @@ function marketingRouteCopies(): Plugin {
         return nested
       })
       await fs.writeFile(rootHtml, applyMarketingMetadata(html, '/'))
+      const developersRoot = path.join(root, DOCS_BASE_PATH.slice(1))
+      await fs.mkdir(developersRoot, { recursive: true })
+      await fs.writeFile(path.join(developersRoot, 'index.html'), applyMarketingMetadata(html, '/'))
 
       // Each route copy is derived from the raw template (not the processed
       // homepage HTML) so the injected canonical/og:url/article tags — which
       // have no placeholder to overwrite — don't accumulate across routes.
       await Promise.all(
         (await marketingRouteCopiesForBuild()).map(async (route) => {
-          const routeDir = path.join(root, route)
+          const routeDir = path.join(root, DOCS_BASE_PATH.slice(1), route)
           await fs.mkdir(routeDir, { recursive: true })
           await fs.writeFile(path.join(routeDir, 'index.html'), applyMarketingMetadata(html, route))
         }),
@@ -138,7 +142,7 @@ function escapeHtmlAttribute(value: string) {
 }
 
 function canonicalPath(route: string) {
-  return route === '/' ? '/' : `/${route}`
+  return route === '/' ? DOCS_BASE_PATH : `${DOCS_BASE_PATH}/${route}`
 }
 
 // Extra <head> tags that have no placeholder in index.html: canonical, og:url,
@@ -219,6 +223,7 @@ function marketingOgImage(route: string, metadata: { title: string; description:
 
 export default defineConfig({
   root: 'src/marketing',
+  base: `${DOCS_BASE_PATH}/`,
   publicDir: path.resolve(process.cwd(), 'public'),
   plugins: [
     blogPostsPlugin(),
