@@ -12,6 +12,39 @@ const baseUrl = (() => {
   return ''
 })()
 
+const searchIndexFields = ['title', 'titles', 'subtitle', 'path', 'excerpt']
+const searchBoost = { title: 5, subtitle: 3, titles: 2, path: 3, excerpt: 3 }
+
+function extractSearchField(document: Record<string, unknown>, fieldName: string) {
+  if (fieldName === 'path') {
+    return String(document.href ?? '')
+      .split('#')[0]
+      .replace(/^\/docs\//, '/')
+      .replaceAll('/', ' ')
+  }
+  if (fieldName === 'excerpt') {
+    return String(document.text ?? '')
+      .trim()
+      .split(/\s+/)
+      .slice(0, 24)
+      .join(' ')
+  }
+  return document[fieldName]
+}
+
+function boostSearchDocument(
+  _documentId: unknown,
+  _term: string,
+  storedFields?: Record<string, unknown>,
+) {
+  const priority = (storedFields?.searchPriority as number | undefined) ?? 1
+  const href = storedFields?.href as string | undefined
+  const segments = href ? href.split('/').filter(Boolean).length : 1
+  const depth = href?.startsWith('/docs/') ? Math.max(segments - 1, 1) : segments
+  const docsBoost = href?.startsWith('/docs/') ? 1.5 : 1
+  return priority * (1 / Math.max(depth, 1)) * docsBoost
+}
+
 export default defineConfig({
   // banner: {
   //   dismissable: false,
@@ -31,6 +64,20 @@ export default defineConfig({
   description: 'Documentation for the Tempo network and protocol specifications',
   renderStrategy: 'partial-static',
   feedback: createFeedbackAdapter(),
+  search: {
+    index: {
+      fields: searchIndexFields,
+      storeFields: ['path', 'excerpt'],
+      extractField: extractSearchField,
+    },
+    query: {
+      combineWith: 'OR',
+      fuzzy: 0.1,
+      prefix: false,
+      boost: searchBoost,
+      boostDocument: boostSearchDocument,
+    },
+  },
   mcp: {
     enabled: true,
     sources: [
@@ -43,6 +90,7 @@ export default defineConfig({
     ],
   },
   baseUrl: baseUrl || undefined,
+  trailingSlashRedirect: false,
   ogImageUrl: (path, options = {}) => {
     const urlBase = options.baseUrl?.replace(/\/$/, '') ?? ''
     const docsPath = path.replace(/^\/docs(?=\/|$)/, '') || '/'
@@ -1050,17 +1098,25 @@ export default defineConfig({
 
     const docsHomeSidebar = [
       {
-        text: 'First Steps',
+        text: 'Start Here',
         items: [
           { text: 'Connect to Tempo', link: '/docs/quickstart/integrate-tempo' },
           { text: 'Get Funds', link: '/docs/guide/getting-funds' },
-          { text: 'Send a Payment', link: '/docs/guide/payments' },
-          { text: 'Use Tempo Transactions', link: '/docs/guide/tempo-transaction' },
-          { text: 'Issue a Stablecoin', link: '/docs/guide/issuance' },
+          { text: 'Send Your First Payment', link: '/docs/guide/payments/send-a-payment' },
         ],
       },
       {
-        text: 'Resources',
+        text: 'Build Paths',
+        items: [
+          { text: 'Stablecoin Payments', link: '/docs/guide/payments' },
+          { text: 'Issue Stablecoins', link: '/docs/guide/issuance' },
+          { text: 'Exchange Stablecoins', link: '/docs/guide/stablecoin-dex' },
+          { text: 'Agentic Payments', link: '/docs/guide/machine-payments' },
+          { text: 'Private Zones', link: '/docs/guide/private-zones' },
+        ],
+      },
+      {
+        text: 'Reference and Operations',
         items: [
           { text: 'Tools & SDKs', link: '/docs/tools' },
           { text: 'Tempo Protocol', link: '/docs/protocol' },
