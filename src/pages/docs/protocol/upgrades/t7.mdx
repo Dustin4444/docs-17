@@ -40,8 +40,7 @@ These changes make costs easier to reason about for partners building high-throu
 
 | Partner impact | What changes |
 |----------------|--------------|
-| Active DEX makers can pay much less on repeat order placement | In the T7 DEX benchmark, same-maker reuse is about 1.21M gas cheaper after an order is canceled or filled. |
-| Returning users can benefit without first-time flows getting worse | Fresh DEX order placement changes by less than 0.5% in the measured bid and ask flows. |
+| Active DEX makers can benefit on repeat order placement | Maker-attributed storage credits let reusable order-storage savings stay attached to the maker who earned them. |
 | Apps can avoid random gas discounts | Shared contracts can track which user earned credits and spend them only for that same user. |
 | MPP sessions can get cheaper over repeated channel lifecycles | In the release benchmark, channel-reserve open calls are 72.1% lower for the open-existing path and 39.2% lower for the open-first path. |
 | All integrators get a simpler low-fee story | The new base fee cap is 40% lower than today's fixed base fee, and quiet periods can be up to 20x cheaper than the cap. |
@@ -127,21 +126,6 @@ The [v1.10.1 release notes](https://github.com/tempoxyz/tempo/releases/tag/v1.10
 | Channel reserve open-existing path | 1,055,229 gas | 294,425 gas | 760,804 gas lower (-72.1%). |
 | Channel reserve open-first path | 1,302,429 gas | 791,625 gas | 510,804 gas lower (-39.2%). |
 | Observed transfer-like costs before T7 | Average $0.0037857 and median $0.0011855 across 1,000 transactions; average $0.0008975 and median $0.0007657 across 598 steady-state transfers | T7 lowers the per-gas component through the new cap and floor | Useful baseline context, not a post-T7 production average. |
-
-### DEX order reuse
-
-For DEX order flows, fresh order placement is effectively unchanged while same-maker credit reuse is about 1.21M gas cheaper in the T7 benchmark.
-
-| DEX flow | Before | After | Gas change |
-|----------|-------:|------:|-------:|
-| Fresh place bid | 2,595,385 | 2,604,066 | +8,681 (+0.3%) |
-| Fresh place ask | 2,348,185 | 2,356,766 | +8,581 (+0.4%) |
-| Cancel bid, earn reusable savings | 304,741 | 361,184 | +56,443 (+18.5%) |
-| **Same maker reuses savings after cancel** | **2,075,413** | **868,756** | **1,206,657 gas saved (-58.1%)** |
-| Order filled, earn reusable savings | 384,497 | 436,040 | +51,543 (+13.4%) |
-| **Same maker reuses savings after filled order** | **1,828,213** | **621,456** | **1,206,757 gas saved (-66.0%)** |
-
-The credit-earning steps cost more because the DEX records which maker earned the reusable savings. The payoff is the next eligible order from that same maker.
 
 ## Compatible releases
 

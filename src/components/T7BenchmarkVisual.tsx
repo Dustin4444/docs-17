@@ -89,7 +89,7 @@ export function T7BenchmarkVisual() {
         </span>
       }
     >
-      <div className="grid gap-5 lg:grid-cols-3">
+      <div className="grid gap-5 lg:grid-cols-2">
         <section className="space-y-3">
           <div>
             <h5 className="m-0 font-medium text-[14px] text-gray12">Base fee</h5>
@@ -111,16 +111,6 @@ export function T7BenchmarkVisual() {
           <BeforeAfterRow label="Open first channel" before={1_302_429} after={791_625} />
         </section>
 
-        <section className="space-y-3">
-          <div>
-            <h5 className="m-0 font-medium text-[14px] text-gray12">DEX repeat orders</h5>
-            <p className="m-0 mt-1 text-gray11 text-sm">
-              Returning makers can reuse order-storage savings.
-            </p>
-          </div>
-          <BeforeAfterRow label="Same maker after cancel" before={2_075_413} after={868_756} />
-          <BeforeAfterRow label="Same maker after filled order" before={1_828_213} after={621_456} />
-        </section>
       </div>
     </Container>
   )
