@@ -40,13 +40,22 @@ for await (const file of glob(`${markdownDirectory}/**/*.md`)) files.push(file)
 if (files.length === 0)
   throw new Error('No generated Markdown files found. Run `pnpm run build` before this audit.')
 
-const llmsFile = resolve('dist/public/llms-full.txt')
-const generatedFiles = [...files, llmsFile]
+const llmsFiles = [resolve('dist/public/llms.txt'), resolve('dist/public/llms-full.txt')]
+const generatedFiles = [...files, ...llmsFiles]
 const hiddenChangelogFallbacks = []
+const missingMcpGuidance = []
 const unresolvedIncludes = []
 for (const file of generatedFiles) {
   const content = await readFile(file, 'utf8')
   if (hasHiddenChangelogFallback(content)) hiddenChangelogFallbacks.push(file)
+  if (
+    !content.includes('https://mcp.tempo.xyz') ||
+    !content.includes('`search`') ||
+    !content.includes('`find_pages`') ||
+    !content.includes('`read_page`') ||
+    !content.includes('`code`')
+  )
+    missingMcpGuidance.push(file)
   const count = content.match(/\[!include /g)?.length ?? 0
   if (count > 0) unresolvedIncludes.push({ count, file })
 }
@@ -61,6 +70,12 @@ if (unresolvedIncludes.length > 0) {
   console.error('Generated Markdown include audit failed.')
   for (const { count, file } of unresolvedIncludes)
     console.error(`- ${file}: ${count} unresolved include${count === 1 ? '' : 's'}`)
+  process.exit(1)
+}
+
+if (missingMcpGuidance.length > 0) {
+  console.error('Generated Markdown is missing canonical MCP guidance.')
+  for (const file of missingMcpGuidance) console.error(`- ${file}`)
   process.exit(1)
 }
 
