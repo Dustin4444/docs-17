@@ -68,6 +68,15 @@ Public access lets you try the API and serve low-volume reads, and [MPP](/docs/a
 Create production and sandbox API keys in [Tempo API Console](https://console.tempo.xyz/?to=/:org/api-keys). Follow the [console quickstart](/docs/api/console) to set up a project and make your first authenticated request.
 :::
 
+## Common Tempo API workflows
+
+- **Track and reconcile a stablecoin payment.** Look up the [transaction and receipt](/docs/api/transactions), then inspect its [transaction activities](/docs/api/activities#list-transaction-activities) to confirm the token movement. Use [webhooks](/docs/api/webhooks) when your backend needs signed event callbacks.
+- **Monitor an account.** Read [balances](/docs/api/balances) and [activity](/docs/api/activities) to build payment history, treasury, or account views.
+- **Fund and exchange stablecoins.** Compare [funding quotes](/docs/api/funding) across supported chains and providers; the Funding API does not execute the transfer. Use [exchange quotes](/docs/api/exchange) to prepare unsigned approval and swap calls for you to sign and submit.
+- **Sponsor transaction fees.** Use the [Fee Payer API](/docs/api/fee-payer) to apply sponsorship policy and fill, sponsor, and broadcast user transactions.
+- **Query custom payment data.** Use the [Indexer API](/docs/api/indexer-api) for read-only SQL across indexed blocks, transactions, receipts, logs, transfers, and exchange data.
+- **Prepare a production integration.** Create projects and keys in [Tempo API Console](/docs/api/console), then review [authentication](/docs/api/authentication), [rate limits](/docs/api/rate-limits), and [errors](/docs/api/errors).
+
 ## Try a Tempo API request
 
 Check out an endpoint below and click "Try" to run it directly against the API. For example, fetch the token balances for an address:
@@ -120,6 +129,12 @@ Browse the [complete Tempo API reference](/docs/api/reference) to find every API
     description="HTTP status codes, the error envelope, and the full error code catalog."
     to="/docs/api/errors"
     icon="lucide:triangle-alert"
+  />
+  <Card
+    title="Tempo API FAQ"
+    description="Answers about API surfaces, credentials, payment monitoring, funding, and exchange quotes."
+    to="/docs/api/faq"
+    icon="lucide:circle-help"
   />
   <Card
     title="Versioning Policy"
