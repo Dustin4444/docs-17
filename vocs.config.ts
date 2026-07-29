@@ -277,8 +277,12 @@ export default defineConfig({
             link: '/docs/api/versioning-policy',
           },
           {
-            text: 'Typed Client',
+            text: 'TypeScript',
             link: '/docs/api/typed-client',
+          },
+          {
+            text: 'Reference',
+            link: '/docs/api/reference',
           },
         ],
       },
